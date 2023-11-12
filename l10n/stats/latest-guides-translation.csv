@@ -1,14 +1,14 @@
 Filename, Fuzzy Messages, Total Messages, Fuzzy Words, Total Words, Achievement
 l10n/po/pt_BR/_guides/qute-reference.adoc.po, 662, 775, 6626, 11680, 44%
-l10n/po/pt_BR/_guides/writing-extensions.adoc.po, 458, 606, 6057, 12575, 52%
+l10n/po/pt_BR/_guides/writing-extensions.adoc.po, 458, 607, 6057, 12575, 52%
 l10n/po/pt_BR/_guides/kafka.adoc.po, 400, 569, 4771, 11460, 59%
 l10n/po/pt_BR/_guides/security-oidc-code-flow-authentication.adoc.po, 243, 319, 4348, 8145, 47%
-l10n/po/pt_BR/_guides/deploying-to-kubernetes.adoc.po, 304, 357, 4051, 6142, 35%
-l10n/po/pt_BR/_guides/security-oidc-auth0-tutorial.adoc.po, 167, 197, 3945, 5204, 25%
+l10n/po/pt_BR/_guides/deploying-to-kubernetes.adoc.po, 303, 357, 4042, 6142, 35%
 l10n/po/pt_BR/_guides/security-jwt.adoc.po, 250, 307, 3503, 4629, 25%
 l10n/po/pt_BR/_guides/resteasy-reactive.adoc.po, 348, 454, 3276, 7103, 54%
 l10n/po/pt_BR/_guides/maven-tooling.adoc.po, 217, 273, 3136, 5438, 43%
 l10n/po/pt_BR/_guides/dev-ui-v2.adoc.po, 229, 347, 2862, 4265, 33%
+l10n/po/pt_BR/_guides/security-oidc-auth0-tutorial.adoc.po, 141, 197, 2832, 5189, 46%
 l10n/po/pt_BR/_guides/security-oidc-bearer-token-authentication.adoc.po, 143, 160, 2772, 3539, 22%
 l10n/po/pt_BR/_guides/rest-client-reactive.adoc.po, 192, 236, 2730, 4383, 38%
 l10n/po/pt_BR/_guides/dev-ui.adoc.po, 209, 219, 2726, 2831, 4%
@@ -18,7 +18,7 @@ l10n/po/pt_BR/_guides/hibernate-orm.adoc.po, 201, 276, 2424, 5221, 54%
 l10n/po/pt_BR/_guides/optaplanner.adoc.po, 130, 241, 2252, 4077, 45%
 l10n/po/pt_BR/_guides/logging.adoc.po, 249, 305, 2237, 3158, 30%
 l10n/po/pt_BR/_guides/cdi-reference.adoc.po, 177, 228, 1974, 4297, 55%
-l10n/po/pt_BR/_guides/datasource.adoc.po, 261, 306, 1816, 3240, 44%
+l10n/po/pt_BR/_guides/datasource.adoc.po, 260, 306, 1806, 3241, 45%
 l10n/po/pt_BR/_guides/mongodb-panache.adoc.po, 141, 198, 1722, 3846, 56%
 l10n/po/pt_BR/_guides/rabbitmq-reference.adoc.po, 226, 250, 1708, 2456, 31%
 l10n/po/pt_BR/_guides/security-openid-connect-multitenancy.adoc.po, 118, 134, 1702, 2394, 29%
@@ -42,8 +42,8 @@ l10n/po/pt_BR/_guides/cache.adoc.po, 118, 161, 1391, 3012, 54%
 l10n/po/pt_BR/_guides/extension-registry-user.adoc.po, 65, 65, 1391, 1391, 0%
 l10n/po/pt_BR/_guides/security-keycloak-authorization.adoc.po, 93, 110, 1380, 2041, 33%
 l10n/po/pt_BR/_guides/deploying-to-openshift.adoc.po, 127, 143, 1377, 2099, 35%
-l10n/po/pt_BR/_guides/cdi.adoc.po, 106, 130, 1309, 2294, 43%
 l10n/po/pt_BR/_guides/resteasy.adoc.po, 107, 149, 1292, 2896, 56%
+l10n/po/pt_BR/_guides/cdi.adoc.po, 105, 130, 1286, 2294, 44%
 l10n/po/pt_BR/_guides/security-openid-connect-client.adoc.po, 86, 89, 1279, 1360, 6%
 l10n/po/pt_BR/_guides/gradle-tooling.adoc.po, 114, 176, 1276, 3481, 64%
 l10n/po/pt_BR/_guides/aws-lambda.adoc.po, 102, 149, 1272, 3046, 59%
@@ -52,7 +52,7 @@ l10n/po/pt_BR/_guides/reactive-routes.adoc.po, 130, 163, 1195, 2293, 48%
 l10n/po/pt_BR/_guides/smallrye-graphql.adoc.po, 137, 178, 1194, 2459, 52%
 l10n/po/pt_BR/_guides/gcp-functions.adoc.po, 81, 94, 1179, 1660, 29%
 l10n/po/pt_BR/_guides/hibernate-orm-panache.adoc.po, 106, 149, 1149, 2813, 60%
-l10n/po/pt_BR/_guides/kotlin.adoc.po, 81, 89, 1135, 1454, 22%
+l10n/po/pt_BR/_guides/kotlin.adoc.po, 81, 89, 1135, 1459, 23%
 l10n/po/pt_BR/_guides/telemetry-micrometer.adoc.po, 155, 193, 1133, 2486, 55%
 l10n/po/pt_BR/_guides/rest-client.adoc.po, 87, 111, 1121, 2000, 44%
 l10n/po/pt_BR/_guides/hibernate-reactive-panache.adoc.po, 104, 152, 1072, 3045, 65%
@@ -61,8 +61,8 @@ l10n/po/pt_BR/_guides/rest-data-panache.adoc.po, 96, 109, 1070, 1619, 34%
 l10n/po/pt_BR/_guides/kafka-streams.adoc.po, 88, 132, 1065, 2606, 60%
 l10n/po/pt_BR/_guides/opentelemetry.adoc.po, 111, 141, 1042, 1838, 44%
 l10n/po/pt_BR/_guides/writing-native-applications-tips.adoc.po, 72, 101, 1006, 2319, 57%
-l10n/po/pt_BR/_guides/security-authorize-web-endpoints-reference.adoc.po, 91, 129, 1000, 2263, 56%
 l10n/po/pt_BR/_guides/reactive-sql-clients.adoc.po, 133, 167, 992, 1905, 48%
+l10n/po/pt_BR/_guides/security-authorize-web-endpoints-reference.adoc.po, 90, 129, 978, 2260, 57%
 l10n/po/pt_BR/_guides/platform.adoc.po, 46, 52, 940, 1342, 30%
 l10n/po/pt_BR/_guides/mongodb.adoc.po, 82, 115, 929, 2075, 56%
 l10n/po/pt_BR/_guides/security-oauth2.adoc.po, 71, 79, 919, 1227, 26%
@@ -90,7 +90,7 @@ l10n/po/pt_BR/_guides/container-image.adoc.po, 60, 76, 760, 1476, 49%
 l10n/po/pt_BR/_guides/deploying-to-azure-cloud.adoc.po, 49, 49, 744, 744, 0%
 l10n/po/pt_BR/_guides/getting-started.adoc.po, 82, 105, 741, 1695, 57%
 l10n/po/pt_BR/_guides/security-csrf-prevention.adoc.po, 44, 48, 739, 838, 12%
-l10n/po/pt_BR/_guides/cassandra.adoc.po, 88, 167, 738, 3409, 79%
+l10n/po/pt_BR/_guides/cassandra.adoc.po, 86, 167, 724, 3409, 79%
 l10n/po/pt_BR/_guides/spring-data-rest.adoc.po, 97, 110, 707, 1112, 37%
 l10n/po/pt_BR/_guides/spring-web.adoc.po, 106, 115, 705, 999, 30%
 l10n/po/pt_BR/_guides/smallrye-metrics.adoc.po, 49, 55, 694, 782, 12%
@@ -173,13 +173,13 @@ l10n/po/pt_BR/_guides/jms.adoc.po, 39, 53, 262, 729, 65%
 l10n/po/pt_BR/_guides/ide-tooling.adoc.po, 49, 49, 252, 252, 0%
 l10n/po/pt_BR/_guides/scheduler.adoc.po, 36, 44, 248, 493, 50%
 l10n/po/pt_BR/_guides/class-loading-reference.adoc.po, 38, 64, 239, 1456, 84%
-l10n/po/pt_BR/_guides/reaugmentation.adoc.po, 15, 20, 235, 667, 65%
 l10n/po/pt_BR/_guides/podman.adoc.po, 27, 35, 229, 666, 66%
 l10n/po/pt_BR/_guides/security-vulnerability-detection.adoc.po, 18, 19, 221, 261, 16%
 l10n/po/pt_BR/_guides/funqy-http.adoc.po, 23, 39, 216, 738, 71%
 l10n/po/pt_BR/_guides/continuous-testing.adoc.po, 29, 42, 211, 701, 70%
 l10n/po/pt_BR/_guides/security-testing.adoc.po, 19, 24, 209, 435, 52%
-l10n/po/pt_BR/_guides/liquibase-mongodb.adoc.po, 26, 36, 198, 496, 61%
+l10n/po/pt_BR/_guides/liquibase-mongodb.adoc.po, 26, 37, 198, 540, 64%
+l10n/po/pt_BR/_guides/reaugmentation.adoc.po, 14, 21, 197, 702, 72%
 l10n/po/pt_BR/_guides/security-properties.adoc.po, 32, 41, 197, 548, 65%
 l10n/po/pt_BR/_guides/security-proactive-authentication.adoc.po, 16, 22, 196, 554, 65%
 l10n/po/pt_BR/_guides/infinispan-dev-services.adoc.po, 22, 38, 192, 770, 76%
@@ -194,7 +194,7 @@ l10n/po/pt_BR/_guides/azure-functions.adoc.po, 28, 43, 152, 653, 77%
 l10n/po/pt_BR/_guides/hibernate-orm-panache-kotlin.adoc.po, 17, 30, 133, 708, 82%
 l10n/po/pt_BR/_guides/rabbitmq-dev-services.adoc.po, 18, 31, 131, 536, 76%
 l10n/po/pt_BR/_guides/config-extending-support.adoc.po, 39, 65, 128, 1040, 88%
-l10n/po/pt_BR/_guides/virtual-threads.adoc.po, 14, 140, 128, 2917, 96%
+l10n/po/pt_BR/_guides/virtual-threads.adoc.po, 14, 140, 128, 2897, 96%
 l10n/po/pt_BR/_guides/stork-reference.adoc.po, 18, 22, 127, 269, 53%
 l10n/po/pt_BR/_guides/apicurio-registry-dev-services.adoc.po, 13, 20, 117, 398, 71%
 l10n/po/pt_BR/_guides/software-transactional-memory.adoc.po, 17, 44, 110, 1959, 95%
