@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-11-03 22:08+0900\n"
+"POT-Creation-Date: 2023-11-12 08:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1132,12 +1132,6 @@ msgstr ""
 msgid "cloud, core"
 msgstr ""
 
-#. type: Array Element: types tutorial extensions
-#: upstream/_data/versioned/main/index/quarkus.yaml:0
-#, no-wrap
-msgid "io.quarkus:quarkus-core"
-msgstr ""
-
 #. type: Hash Value: types guide filename
 #: upstream/_data/versioned/main/index/quarkus.yaml:0
 #, no-wrap
@@ -1891,7 +1885,7 @@ msgstr ""
 #. type: Array Element: types reference topics
 #: upstream/_data/versioned/main/index/quarkus.yaml:0
 #, no-wrap
-msgid "devmode"
+msgid "dev-mode"
 msgstr ""
 
 #. type: Hash Value: types guide url
@@ -2131,7 +2125,7 @@ msgstr ""
 #. type: Array Element: types tutorial topics
 #: upstream/_data/versioned/main/index/quarkus.yaml:0
 #, no-wrap
-msgid "devservices"
+msgid "dev-services"
 msgstr ""
 
 #. type: Hash Value: types guide url
@@ -3284,6 +3278,12 @@ msgstr ""
 #: upstream/_data/versioned/main/index/quarkus.yaml:0
 #, no-wrap
 msgid "hibernate-search-orm-elasticsearch.adoc"
+msgstr ""
+
+#. type: Hash Value: types guide keywords
+#: upstream/_data/versioned/main/index/quarkus.yaml:0
+#, no-wrap
+msgid "elasticsearch hibernate orm search"
 msgstr ""
 
 #. type: Hash Value: types guide summary
@@ -5758,7 +5758,7 @@ msgstr ""
 msgid "/guides/security-keycloak-authorization"
 msgstr ""
 
-#. type: Array Element: types guide extensions
+#. type: Array Element: types tutorial extensions
 #: upstream/_data/versioned/main/index/quarkus.yaml:0
 #, no-wrap
 msgid "io.quarkus:quarkus-opentelemetry"
@@ -5782,7 +5782,7 @@ msgstr ""
 msgid "Using OpenTelemetry"
 msgstr ""
 
-#. type: Array Element: types guide topics
+#. type: Array Element: types tutorial topics
 #: upstream/_data/versioned/main/index/quarkus.yaml:0
 #, no-wrap
 msgid "opentelemetry"
@@ -5794,7 +5794,7 @@ msgstr ""
 msgid "/guides/opentelemetry"
 msgstr ""
 
-#. type: Array Element: types guide extensions
+#. type: Array Element: types tutorial extensions
 #: upstream/_data/versioned/main/index/quarkus.yaml:0
 #, no-wrap
 msgid "io.quarkus:quarkus-smallrye-opentracing"
@@ -5818,7 +5818,7 @@ msgstr ""
 msgid "Using OpenTracing"
 msgstr ""
 
-#. type: Array Element: types guide topics
+#. type: Array Element: types tutorial topics
 #: upstream/_data/versioned/main/index/quarkus.yaml:0
 #, no-wrap
 msgid "opentracing"
@@ -7772,6 +7772,48 @@ msgstr ""
 #: upstream/_data/versioned/main/index/quarkus.yaml:0
 #, no-wrap
 msgid "/guides/security-getting-started-tutorial"
+msgstr ""
+
+#. type: Hash Value: types tutorial filename
+#: upstream/_data/versioned/main/index/quarkus.yaml:0
+#, no-wrap
+msgid "telemetry-opentracing-to-otel-tutorial.adoc"
+msgstr ""
+
+#. type: Hash Value: types tutorial id
+#: upstream/_data/versioned/main/index/quarkus.yaml:0
+#, no-wrap
+msgid "telemetry-opentracing-to-otel-tutorial"
+msgstr ""
+
+#. type: Hash Value: types tutorial summary
+#: upstream/_data/versioned/main/index/quarkus.yaml:0
+#, no-wrap
+msgid "Migrate an application from OpenTracing to OpenTelemetry tracing in Quarkus 3.x."
+msgstr ""
+
+#. type: Hash Value: types tutorial title
+#: upstream/_data/versioned/main/index/quarkus.yaml:0
+#, no-wrap
+msgid "Migrate from OpenTracing to OpenTelemetry tracing"
+msgstr ""
+
+#. type: Array Element: types tutorial topics
+#: upstream/_data/versioned/main/index/quarkus.yaml:0
+#, no-wrap
+msgid "tracing"
+msgstr ""
+
+#. type: Array Element: types tutorial topics
+#: upstream/_data/versioned/main/index/quarkus.yaml:0
+#, no-wrap
+msgid "migration"
+msgstr ""
+
+#. type: Hash Value: types tutorial url
+#: upstream/_data/versioned/main/index/quarkus.yaml:0
+#, no-wrap
+msgid "/guides/telemetry-opentracing-to-otel-tutorial"
 msgstr ""
 
 #. type: Hash Value: types tutorial filename

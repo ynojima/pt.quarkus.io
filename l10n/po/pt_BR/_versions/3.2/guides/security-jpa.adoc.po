@@ -144,14 +144,12 @@ msgstr ""
 msgid "In cryptography, a salt is a name for random data used as an additional input to a one-way function that hashes data, a password, or a passphrase."
 msgstr ""
 
-#. type: Plain text
 #: _versions/3.2/guides/security-jpa.adoc
-msgid "For manual password hashing, create a class that implements the `CustomPasswordProvider`as shown in the example below."
+msgid "To represent passwords stored in the database which were hashed using different hashing algorithms, create a class that implements `org.wildfly.security.password.PasswordProvider` as shown in the example below."
 msgstr ""
 
-#. type: Plain text
 #: _versions/3.2/guides/security-jpa.adoc
-msgid "The following snippet shows how to set a custom password provider that uses the SHA256 hashing algorithm."
+msgid "The following snippet shows how to set a custom password provider that represents a password which was hashed with the SHA256 hashing algorithm."
 msgstr ""
 
 #: _versions/3.2/guides/security-jpa.adoc

@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-11-03 22:08+0900\n"
+"POT-Creation-Date: 2023-11-12 08:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,37 +25,37 @@ msgstr ""
 #. type: Hash Value: upcomingevents date
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "October 11-13, 2023"
+msgid "February 5-7, 2024"
 msgstr ""
 
 #. type: Hash Value: upcomingevents description
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "DEVOXX MOROCCO is the largest developer conference in Africa & Middle East region, which aims to enable local and international technology experts to share their knowledge and expertise with technology enthusiasts."
+msgid "Jfokus is all about developers! Java SE & Java EE, Frontend & Web. Android & Mobile, Continuous Delivery & DevOps, Internet of Things, Cloud & Big Data, Future & Trends, Alt.JVM Languages like Scala, Clojure & many more, Agile development. And super heroes..."
 msgstr ""
 
 #. type: Hash Value: upcomingevents link
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "https://github.com/quarkusio/quarkus/discussions/35825"
+msgid "https://github.com/quarkusio/quarkus/discussions/36586"
 msgstr ""
 
 #. type: Hash Value: upcomingevents location
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "Agrid, Morocco"
+msgid "Stockholm, Sweden"
 msgstr ""
 
 #. type: Hash Value: upcomingevents thumbnail
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "devoxxmorocco_logo.png"
+msgid "jfokus_logo.png"
 msgstr ""
 
 #. type: Hash Value: upcomingevents title
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "Devoxx Morocco"
+msgid "JFokus"
 msgstr ""
 
 #. type: Hash Value: upcomingevents type
@@ -67,71 +67,71 @@ msgstr ""
 #. type: Hash Value: upcomingevents date
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "October 19-20, 2023"
+msgid "February 29 - March 1, 2024"
 msgstr ""
 
 #. type: Hash Value: upcomingevents description
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "The Devfest (i.e Developers Festival), is a technical conference destined to developers. It's meant for students, professionals, or any curious techie."
+msgid "Europe's Leading Tech City will offer a 2 Day Festival of Tech with Developers from around the Planet, the must attend event for you and your whole Tech Team to attend."
 msgstr ""
 
 #. type: Hash Value: upcomingevents link
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "https://github.com/quarkusio/quarkus/discussions/35827"
+msgid "https://github.com/quarkusio/quarkus/discussions/36904"
 msgstr ""
 
 #. type: Hash Value: upcomingevents location
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "Nantes, France"
+msgid "Amsterdam, Netherlands"
 msgstr ""
 
 #. type: Hash Value: upcomingevents thumbnail
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "devfestnantes_logo.png"
+msgid "devworld_logo.png"
 msgstr ""
 
 #. type: Hash Value: upcomingevents title
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "DevFest Nantes"
+msgid "DEV World"
 msgstr ""
 
 #. type: Hash Value: upcomingevents date
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "November 6th, 2023"
+msgid "April 23-26, 2024"
 msgstr ""
 
 #. type: Hash Value: upcomingevents description
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "AppDeveloper is a co-located event as part of CNCF North America."
+msgid "Embark on a transformative journey at GIDS 2024. From April 23-26, experience an extraordinary four-day program brimming with technical brilliance, captivating conversations, and visionary insights. Engage with trailblazing minds in software engineering and architecture, and discover the companies shaping the future of technology."
 msgstr ""
 
 #. type: Hash Value: upcomingevents link
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "https://github.com/quarkusio/quarkus/discussions/35936"
+msgid "https://github.com/quarkusio/quarkus/discussions/36902"
 msgstr ""
 
 #. type: Hash Value: upcomingevents location
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "Chicago, Illinois"
+msgid "Bengaluru, India"
 msgstr ""
 
 #. type: Hash Value: upcomingevents thumbnail
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "appdevelopercon_logo.png"
+msgid "gids_logo.png"
 msgstr ""
 
 #. type: Hash Value: upcomingevents title
 #: upstream/_data/events.yaml:0
 #, no-wrap
-msgid "AppDeveloperCon"
+msgid "Great International Developer Summit 2024"
 msgstr ""

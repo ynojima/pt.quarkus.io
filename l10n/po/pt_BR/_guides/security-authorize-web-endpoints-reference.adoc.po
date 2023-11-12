@@ -184,8 +184,7 @@ msgstr "O pedido é rejeitado se corresponder a um ou mais conjuntos de permiss�
 #: _guides/security-authorize-web-endpoints-reference.adoc
 msgid ""
 "Given the preceding permission set, `GET /public/foo` would match both the path and method and therefore be allowed.\n"
-"In contrast, `POST /public/foo` would match the path but not the method.\n"
-"It would therefore be rejected."
+"In contrast, `POST /public/foo` would match the path but not the method, and, therefore, be rejected."
 msgstr ""
 
 #. type: Title ===
@@ -376,7 +375,7 @@ msgstr "Autorização através de anotações"
 
 #: _guides/security-authorize-web-endpoints-reference.adoc
 msgid ""
-"{project-name} includes built-in security to allow for  link:https://en.wikipedia.org/wiki/Role-based_access_control[Role-Based Access Control (RBAC)]\n"
+"{project-name} includes built-in security to allow for link:https://en.wikipedia.org/wiki/Role-based_access_control[Role-Based Access Control (RBAC)]\n"
 "based on the common security annotations `@RolesAllowed`, `@DenyAll`, `@PermitAll` on REST endpoints and CDI beans."
 msgstr ""
 
@@ -645,7 +644,7 @@ msgstr ""
 #: _guides/security-authorize-web-endpoints-reference.adoc
 msgid ""
 "The easiest way to add permissions to a role-enabled `SecurityIdentity` instance is to map roles to permissions.\n"
-"Use xref:authorization-using-configuration[Authorization using configuration] to grant the required  `SecurityIdentity` permissions for `CRUDResource` endpoints to authenticated requests, as outlined in the following example:"
+"Use xref:authorization-using-configuration[Authorization using configuration] to grant the required `SecurityIdentity` permissions for `CRUDResource` endpoints to authenticated requests, as outlined in the following example:"
 msgstr ""
 
 #: _guides/security-authorize-web-endpoints-reference.adoc
@@ -714,8 +713,8 @@ msgstr ""
 
 #: _guides/security-authorize-web-endpoints-reference.adoc
 msgid ""
-"Here, the first `Library` parameter is `migrate`, therefore the `library` parameter gets marked explicitly through `PermissionsAllowed#params`.\n"
-"The permission constructor and the annotated method must have the parameter `library` set, otherwise, validation fails."
+"Here, the first `Library` parameter is `migrate`; therefore, the `library` parameter gets marked explicitly through `PermissionsAllowed#params`.\n"
+"The permission constructor and the annotated method must have the parameter `library` set; otherwise, validation fails."
 msgstr ""
 
 #. type: Block title
@@ -767,11 +766,9 @@ msgstr ""
 msgid "You can add a permission checker through `io.quarkus.security.runtime.QuarkusSecurityIdentity.Builder#addPermissionChecker`."
 msgstr "É possível adicionar um verificador de permissões através de `io.quarkus.security.runtime.QuarkusSecurityIdentity.Builder#addPermissionChecker`."
 
-#. type: Plain text
 #: _guides/security-authorize-web-endpoints-reference.adoc
-#, fuzzy
-msgid "Annotation permissions do not work with the custom xref:security-customization.adoc#jaxrs-security-context[Custom Jakarta REST SecurityContext] because there are no permissions in `jakarta.ws.rs.core.SecurityContext`."
-msgstr "As permissões de anotação não funcionam com o  link:security-customization.html#jaxrs-security-context[Jakarta REST SecurityContext] personalizado porque não existem permissões em `jakarta.ws.rs.core.SecurityContext`."
+msgid "Annotation-based permissions do not work with custom xref:security-customization.adoc#jaxrs-security-context[Jakarta REST SecurityContexts] because there are no permissions in `jakarta.ws.rs.core.SecurityContext`."
+msgstr ""
 
 #. type: Title ==
 #: _guides/security-authorize-web-endpoints-reference.adoc

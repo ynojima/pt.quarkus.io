@@ -143,7 +143,7 @@ msgid ""
 msgstr ""
 
 #: _guides/cdi.adoc
-msgid "Your can use programmatic lookup via  `jakarta.enterprise.inject.Instance` to resolve ambiguities at runtime and even iterate over all beans implementing a given type:"
+msgid "You can use programmatic lookup via  `jakarta.enterprise.inject.Instance` to resolve ambiguities at runtime and even iterate over all beans implementing a given type:"
 msgstr ""
 
 #. type: Plain text
@@ -377,11 +377,9 @@ msgid ""
 "You can read/write fields of an injected `@Singleton` safely."
 msgstr ""
 
-#. type: Plain text
 #: _guides/cdi.adoc
-#, fuzzy
-msgid "`@Singleton` should have a slightly better performance because the is no indirection (no proxy that delegates to the current instance from the context)."
-msgstr "`@Singleton` deve ter um desempenho ligeiramente melhor porque não há indirecção (nenhum proxy que delegue a instância atual a partir do contexto)."
+msgid "`@Singleton` should have a slightly better performance because there is no indirection (no proxy that delegates to the current instance from the context)."
+msgstr ""
 
 #. type: Plain text
 #: _guides/cdi.adoc

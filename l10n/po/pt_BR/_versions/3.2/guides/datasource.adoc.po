@@ -55,9 +55,8 @@ msgstr ""
 msgid "Get started with configuring `datasources` in Quarkus"
 msgstr ""
 
-#. type: Plain text
 #: _versions/3.2/guides/datasource.adoc
-msgid "For rapid configuration of datasources, this section offers a brief overview and code samples for testing and utilization, suitable for users familiar with the fundamentals."
+msgid "For users familiar with the fundamentals, this section provides an overview and code samples to set up data sources quickly."
 msgstr ""
 
 #. type: Plain text
@@ -89,9 +88,8 @@ msgid ""
 "This is useful if you want to connect to the database with an external tool."
 msgstr ""
 
-#. type: Plain text
 #: _versions/3.2/guides/datasource.adoc
-msgid "To utilize this feature, ensure a Docker or Podman container runtime is installed, depending on the database type. Certain databases, such as H2, operate in in-memory mode and do not require a container runtime."
+msgid "To use this feature, ensure a Docker or Podman container runtime is installed, depending on the database type. Certain databases, such as H2, operate in in-memory mode and do not require a container runtime."
 msgstr ""
 
 #: _versions/3.2/guides/datasource.adoc
@@ -346,9 +344,8 @@ msgid ""
 "However, using a non-built-in database kind is unlikely to work when compiling your application to a native executable."
 msgstr ""
 
-#. type: delimited block =
 #: _versions/3.2/guides/datasource.adoc
-msgid "For native executable builds, it is recommended to either utilize the available JDBC Quarkus extensions or contribute a custom extension for your specific driver."
+msgid "For native executable builds, it is recommended to either use the available JDBC Quarkus extensions or contribute a custom extension for your specific driver."
 msgstr ""
 
 #. type: Plain text
@@ -725,7 +722,7 @@ msgstr ""
 #: _versions/3.2/guides/datasource.adoc
 msgid ""
 "When you access your application’s health readiness endpoint, `/q/health/ready` by default, you receive information about the datasource validation status.\n"
-"If you have multiple datasources, all datasources are checked, and if a single datasource validation failure occurs, the status changes to`DOWN`."
+"If you have multiple datasources, all datasources are checked, and if a single datasource validation failure occurs, the status changes to `DOWN`."
 msgstr ""
 
 #. type: Plain text
@@ -1267,11 +1264,9 @@ msgstr ""
 msgid "`quarkus-jdbc-db2`"
 msgstr ""
 
-#. type: Table
 #: _versions/3.2/guides/datasource.adoc
-#, no-wrap
 msgid ""
-"* JDBC: `com.ibm.db2.jcc.DBDriver`\n"
+"* JDBC: `com.ibm.db2.jcc.DB2Driver`\n"
 "\n"
 "* XA: `com.ibm.db2.jcc.DB2XADataSource`"
 msgstr ""

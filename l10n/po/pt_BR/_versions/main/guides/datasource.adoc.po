@@ -722,7 +722,7 @@ msgstr ""
 #: _versions/main/guides/datasource.adoc
 msgid ""
 "When you access your application’s health readiness endpoint, `/q/health/ready` by default, you receive information about the datasource validation status.\n"
-"If you have multiple datasources, all datasources are checked, and if a single datasource validation failure occurs, the status changes to`DOWN`."
+"If you have multiple datasources, all datasources are checked, and if a single datasource validation failure occurs, the status changes to `DOWN`."
 msgstr ""
 
 #. type: Plain text
@@ -1264,11 +1264,9 @@ msgstr ""
 msgid "`quarkus-jdbc-db2`"
 msgstr ""
 
-#. type: Table
 #: _versions/main/guides/datasource.adoc
-#, no-wrap
 msgid ""
-"* JDBC: `com.ibm.db2.jcc.DBDriver`\n"
+"* JDBC: `com.ibm.db2.jcc.DB2Driver`\n"
 "\n"
 "* XA: `com.ibm.db2.jcc.DB2XADataSource`"
 msgstr ""

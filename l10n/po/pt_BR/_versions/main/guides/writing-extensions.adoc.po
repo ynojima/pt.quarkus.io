@@ -2990,9 +2990,11 @@ msgid ""
 msgstr ""
 
 #: _versions/main/guides/writing-extensions.adoc
-msgid ""
-"An example of parsing an XML config file using JAXB is shown in the `TestProcessor#parseServiceXmlConfig` method:\n"
-".Parsing an XML Configuration into Runtime XmlConfig Instance"
+msgid "An example of parsing an XML config file using JAXB is shown in the `TestProcessor#parseServiceXmlConfig` method:"
+msgstr ""
+
+#: _versions/main/guides/writing-extensions.adoc
+msgid "Parsing an XML Configuration into Runtime XmlConfig Instance"
 msgstr ""
 
 #. type: Plain text

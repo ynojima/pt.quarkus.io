@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-11-03 22:08+0900\n"
+"POT-Creation-Date: 2023-11-12 08:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -259,7 +259,7 @@ msgstr ""
 #. type: Hash Value: types tutorial categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "web, security"
+msgid "security, web"
 msgstr ""
 
 #. type: Hash Value: types concepts filename
@@ -331,7 +331,7 @@ msgstr ""
 #. type: Hash Value: types concepts categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "core, architecture"
+msgid "architecture, core"
 msgstr ""
 
 #. type: Hash Value: types concepts filename
@@ -787,7 +787,7 @@ msgstr ""
 #. type: Hash Value: types guide categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "cloud, core"
+msgid "core, cloud"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -1363,7 +1363,7 @@ msgstr ""
 #. type: Hash Value: types guide categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "cloud, native"
+msgid "native, cloud"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -1591,7 +1591,7 @@ msgstr ""
 #. type: Hash Value: types guide categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "data, tooling"
+msgid "tooling, data"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -3619,7 +3619,7 @@ msgstr ""
 #. type: Hash Value: types guide categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "writing-extensions, core, native"
+msgid "core, native, writing-extensions"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -4339,30 +4339,6 @@ msgstr ""
 #. type: Hash Value: types guide filename
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "transaction.adoc"
-msgstr ""
-
-#. type: Hash Value: types guide summary
-#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
-#, no-wrap
-msgid "Quarkus comes with a Transaction Manager and uses it to coordinate and expose transactions to your applications."
-msgstr ""
-
-#. type: Hash Value: types guide title
-#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
-#, no-wrap
-msgid "Using Transactions in Quarkus"
-msgstr ""
-
-#. type: Hash Value: types guide url
-#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
-#, no-wrap
-msgid "/guides/transaction"
-msgstr ""
-
-#. type: Hash Value: types guide filename
-#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
-#, no-wrap
 msgid "websockets.adoc"
 msgstr ""
 
@@ -4657,7 +4633,7 @@ msgstr ""
 #. type: Hash Value: types guide categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "web, serialization"
+msgid "serialization, web"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -4754,30 +4730,6 @@ msgstr ""
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
 msgid "/guides/virtual-threads"
-msgstr ""
-
-#. type: Hash Value: types guide filename
-#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
-#, no-wrap
-msgid "config-yaml.adoc"
-msgstr ""
-
-#. type: Hash Value: types guide summary
-#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
-#, no-wrap
-msgid "YAML as a Configuration Source."
-msgstr ""
-
-#. type: Hash Value: types guide title
-#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
-#, no-wrap
-msgid "YAML Configuration"
-msgstr ""
-
-#. type: Hash Value: types guide url
-#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
-#, no-wrap
-msgid "/guides/config-yaml"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -4900,6 +4852,36 @@ msgstr ""
 msgid "/guides/update-quarkus"
 msgstr ""
 
+#. type: Hash Value: types howto filename
+#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
+#, no-wrap
+msgid "config-yaml.adoc"
+msgstr ""
+
+#. type: Hash Value: types howto id
+#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
+#, no-wrap
+msgid "config-yaml"
+msgstr ""
+
+#. type: Hash Value: types howto summary
+#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
+#, no-wrap
+msgid "Optionally, use `application.yaml` instead of `application.properties` to configure your application."
+msgstr ""
+
+#. type: Hash Value: types howto title
+#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
+#, no-wrap
+msgid "YAML configuration"
+msgstr ""
+
+#. type: Hash Value: types howto url
+#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
+#, no-wrap
+msgid "/guides/config-yaml"
+msgstr ""
+
 #. type: Hash Value: types reference filename
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
@@ -5017,7 +4999,7 @@ msgstr ""
 #. type: Hash Value: types reference categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "getting-started, data"
+msgid "data, getting-started"
 msgstr ""
 
 #. type: Hash Value: types reference filename
@@ -5125,7 +5107,7 @@ msgstr ""
 #. type: Hash Value: types reference categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "observability, getting-started, core"
+msgid "core, observability, getting-started"
 msgstr ""
 
 #. type: Hash Value: types reference filename
@@ -5521,6 +5503,30 @@ msgstr ""
 #. type: Hash Value: types reference filename
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
+msgid "transaction.adoc"
+msgstr ""
+
+#. type: Hash Value: types reference summary
+#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
+#, no-wrap
+msgid "The quarkus-narayana-jta extension provides a Transaction Manager that coordinates and expose transactions to your applications as described in the link: Jakarta Transactions specification, formerly known as Java Transaction API (JTA)."
+msgstr ""
+
+#. type: Hash Value: types reference title
+#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
+#, no-wrap
+msgid "Using transactions in Quarkus"
+msgstr ""
+
+#. type: Hash Value: types reference url
+#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
+#, no-wrap
+msgid "/guides/transaction"
+msgstr ""
+
+#. type: Hash Value: types reference filename
+#: upstream/_data/versioned/3-2/index/quarkus.yaml:0
+#, no-wrap
 msgid "vertx-reference.adoc"
 msgstr ""
 
@@ -5545,7 +5551,7 @@ msgstr ""
 #. type: Hash Value: types tutorial categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "getting-started, native"
+msgid "native, getting-started"
 msgstr ""
 
 #. type: Hash Value: types tutorial filename
@@ -5773,7 +5779,7 @@ msgstr ""
 #. type: Hash Value: types tutorial categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "getting-started, security"
+msgid "security, getting-started"
 msgstr ""
 
 #. type: Hash Value: types tutorial filename

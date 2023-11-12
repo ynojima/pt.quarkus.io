@@ -2343,7 +2343,7 @@ msgstr ""
 msgid ""
 "If you need more customization capabilities than registering a module,\n"
 "you can produce a CDI bean that implements `io.quarkus.jackson.ObjectMapperCustomizer` via an `AdditionalBeanBuildItem`.\n"
-"More info about customizing Jackson can be found on the JSON guide xref:rest-json.adoc#configuring-json-support[Configuring JSON support]"
+"More info about customizing Jackson can be found on the JSON guide xref:rest-json.adoc#json[Configuring JSON support]"
 msgstr ""
 
 #. type: Title ====

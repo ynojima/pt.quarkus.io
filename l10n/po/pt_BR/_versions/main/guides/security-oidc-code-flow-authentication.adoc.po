@@ -294,15 +294,12 @@ msgstr ""
 msgid "If the tokens have to be introspected and the introspection endpoint-specific authentication mechanism is required, then you can configure `quarkus-oidc`, as follows:"
 msgstr ""
 
-#. type: Title ====
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-#, no-wrap
-msgid "OIDC client request customization"
+msgid "OIDC request customization"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "You can customize OIDC client requests by registering one or more `OidcClientRequestFiler` implementations which can update or add new request headers, please see xref:security-openid-connect-client-reference#oidc-client-filters[Client request customization] for more information."
+msgid "You can customize OIDC requests made by Quarkus to the OIDC provider by registering one or more `OidcRequestFiler` implementations which can update or add new request headers, please see xref:security-openid-connect-client-reference#oidc-client-filters[Client request customization] for more information."
 msgstr ""
 
 #. type: Title ====

@@ -848,7 +848,7 @@ msgstr "O `@ShouldNotPin` também pode ser usado diretamente nos métodos."
 #: _guides/virtual-threads.adoc
 msgid ""
 "The _junit5-virtual-threads_ also provides a `@ShouldPin` annotation for cases where pinning is unavoidable.\n"
-"The following snippet demonstrates the `@ShouldPin` annotation usage and the possibility to inject a `ThreadPinnedEvents` instance in your test to verify when the carrier thread was pinned manually."
+"The following snippet demonstrates the `@ShouldPin` annotation usage."
 msgstr ""
 
 #. type: Title ==

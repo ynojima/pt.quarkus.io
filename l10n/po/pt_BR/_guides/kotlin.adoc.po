@@ -209,7 +209,7 @@ msgstr ""
 #: _guides/kotlin.adoc
 msgid ""
 "If your application contains Kotlin classes annotated with `jakarta.enterprise.context.ApplicationScoped`\n"
-"for example, then `<option>all-open:annotation=jakarta.enterprise.context.ApplicationScoped</option>` needs to be added as well. Same goes for any class that needs to have a dynamic proxy created at runtime."
+"for example, then `<option>all-open:annotation=jakarta.enterprise.context.ApplicationScoped</option>` needs to be added as well. Same goes for any class that needs to have a dynamic proxy created at runtime, like a JPA Entity class."
 msgstr ""
 
 #. type: Plain text

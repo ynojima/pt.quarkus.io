@@ -43,9 +43,8 @@ msgstr ""
 msgid "Prerequisites"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "Please review the following documentation before you begin:"
+msgid "Review the following documentation before you begin:"
 msgstr ""
 
 #. type: Plain text
@@ -295,9 +294,8 @@ msgid ""
 "You will then be redirected to the OIDC Dev UI dashboard, as follows:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "Here you can look at both ID and access tokens in the encoded and decoded formats, copy them to the clipboard or use them to test the service endpoint. We will test the endpoint later but for now let's check the ID token:"
+msgid "Here, you can look at both ID and access tokens in the encoded and decoded formats, copy them to the clipboard or use them to test the service endpoint. We will test the endpoint later but for now let's check the ID token:"
 msgstr ""
 
 #. type: Plain text
@@ -340,9 +338,8 @@ msgstr ""
 msgid "Logout support"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "Now that you have the users signing in to Quarkus with the help from Auth0, you will likely would like to support a user initiated logout. Quarkus supports https://quarkus.io/guides/security-oidc-code-flow-authentication#logout-and-expiration[RP-initiated and other standard OIDC logout mechanisms, as well as the local session logout]."
+msgid "Now that you have the users signing in to Quarkus with the help of Auth0, you probably want to support a user-initiated logout. Quarkus supports https://quarkus.io/guides/security-oidc-code-flow-authentication#logout-and-expiration[RP-initiated and other standard OIDC logout mechanisms, as well as the local session logout]."
 msgstr ""
 
 #. type: Plain text
@@ -430,10 +427,8 @@ msgstr ""
 msgid "Now logout directly from OIDC Dev UI and login as a new user - add more users to the registered Auth0 application if required."
 msgstr ""
 
-#. type: Title ==
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-#, no-wrap
-msgid "Role Based Access Control"
+msgid "Role-based access control"
 msgstr ""
 
 #. type: Plain text
@@ -441,9 +436,8 @@ msgstr ""
 msgid "We have confirmed that the Quarkus endpoint can be accessed by users who have authenticated with the help of `Auth0`."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "The next step is to introduce Role Based Access Control (RBAC) to have users in a specific role only, such as `admin`, be able to access the endpoint."
+msgid "The next step is to introduce role-based access control (RBAC) to have users in a specific role only, such as `admin`, be able to access the endpoint."
 msgstr ""
 
 #. type: Plain text
@@ -466,9 +460,8 @@ msgstr ""
 msgid "Note a custom Auth0 claim has to be namespace qualified, so the claim which will contain roles will be named as \"https://quarkus-security.com/roles\". Have a look at the ID token content we analyzed in the previous sections and you will see how this claim is represented, for example:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "The `Auth0` Login Flow diagramm should look like this now:"
+msgid "The `Auth0` Login Flow diagram should look like this now:"
 msgstr ""
 
 #. type: Plain text
@@ -522,9 +515,8 @@ msgstr ""
 msgid "The main goal of this section is to explain how Quarkus can be tuned to accept `opaque` bearer Auth0 access tokens as opposed to Auth0 JWT access tokens because Auth0 access tokens issued during the authorization code flow are opaque by default and they can only be used to request `UserInfo` in addition to the information about the current user which is already available in ID token. Learning how to verify opaque tokens can be useful because many OIDC and OAuth2 providers will issue opaque access tokens only."
 msgstr ""
 
-#. type: delimited block =
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "Please see the xref:token-propagation[Propagate access tokens to microservices] and xref:jwt-access-tokens[Access tokens in JWT format] sections below for more information on how to configure Auth0 and Quarkus to have authorization code access tokens issued in the JWT format and propagated to service endpoints."
+msgid "For more information on how to configure Auth0 and Quarkus to have authorization code access tokens issued in the JWT format and propagated to service endpoints, see the following xref:token-propagation[Propagate access tokens to microservices] and xref:jwt-access-tokens[Access tokens in JWT format] sections."
 msgstr ""
 
 #. type: Plain text
@@ -542,9 +534,8 @@ msgstr ""
 msgid "Lets go again to http://localhost:8080/q/dev, select the `OpenId Connect` card, login to Auth0, and check the Access token content:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "This access token, as opposed to the ID token we looked at earlier, can not be verified by Quarkus directly. This is because the access token is in `JWE` (encrypted) as opposed to `JWS` (signed) format. You can see from the decoded token headers that it has been encrypted directly with a secret key known to Auth0 only, and therefore its content can not be decrypted by Quarkus. From the Quarkus's perspective this access token is an `opaque` one, Quarkus can not use public Auth0 asymmetric verification keys to verify it."
+msgid "This access token, as opposed to the ID token we looked at earlier, cannot be verified by Quarkus directly. This is because the access token is in `JWE` (encrypted) as opposed to `JWS` (signed) format. You can see from the decoded token headers that it has been encrypted directly with a secret key known to Auth0 only, and therefore its content cannot be decrypted by Quarkus. From the Quarkus's perspective this access token is an `opaque` one, Quarkus cannot use public Auth0 asymmetric verification keys to verify it."
 msgstr ""
 
 #. type: Plain text
@@ -563,9 +554,8 @@ msgstr ""
 msgid "Therefore the other option, indirect access token verification, where the access token is used to acquire `UserInfo` from Auth0 can be used to accept and verify opaque Auth0 tokens. This option works because OIDC providers have to verify access tokens before they can issue `UserInfo` and Auth0 has a `UserInfo` endpoint."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "So lets configure Quarkus to request that the access tokens must be verified by using them to acquite `UserInfo`:"
+msgid "So lets configure Quarkus to request that the access tokens must be verified by using them to acquire `UserInfo`:"
 msgstr ""
 
 #. type: Plain text
@@ -593,19 +583,16 @@ msgstr ""
 msgid "To confirm that it really does work, update the test endpoint to allow a `user` role only with `@RolesAllowed(\"user\")`. Try to access the endpoint from OIDC Dev UI again, and you will get the HTTP `403` error. Revert the code back to `@RolesAllowed(\"admin\")` to get the reassuring HTTP `200` status again."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "When verifying the opaque access token indirecly, by using it to request `UserInfo`, Quarkus will use `UserInfo` as the source of the roles information, if any. As it happens, Auth0 includes the custom role claim which was created earlier in the `UserInfo` response as well."
+msgid "When verifying the opaque access token indirectly, by using it to request `UserInfo`, Quarkus will use `UserInfo` as the source of the roles information, if any. As it happens, Auth0 includes the custom role claim which was created earlier in the `UserInfo` response as well."
 msgstr ""
 
-#. type: delimited block =
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "As has already been mentioned in the introduction to this section, the main goal of this section is to explain how Quarkus can verify opaque access tokens. In general, propagating access tokens whose only purpose is to allow retrieving `UserInfo` to services should be avoided unless the frontend JAX-RS endpoint or SPA prefers to delegate UserInfo retrieval to the trusted service."
+msgid "As has already been mentioned in the introduction to this section, the main goal of this section is to explain how Quarkus can verify opaque access tokens. In general, propagating access tokens whose only purpose is to allow retrieving `UserInfo` to services should be avoided unless the front-end JAX-RS endpoint or SPA prefers to delegate UserInfo retrieval to the trusted service."
 msgstr ""
 
-#. type: delimited block =
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "Please see the following xref:token-propagation[Propagate access tokens to microservices] and xref:jwt-access-tokens[Access tokens in JWT format] sections for a recommended approach of working with Auth0 access tokens."
+msgid "For a recommended approach of working with Auth0 access tokens, see the following xref:token-propagation[Propagate access tokens to microservices] and xref:jwt-access-tokens[Access tokens in JWT format] sections."
 msgstr ""
 
 #. type: delimited block =
@@ -624,9 +611,8 @@ msgstr ""
 msgid "to your application's pom then you will see a Swagger link in OIDC Dev UI:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "Click on the Swagger link and start testing the service."
+msgid "Click the Swagger link and start testing the service."
 msgstr ""
 
 #. type: Title ==
@@ -645,14 +631,14 @@ msgstr ""
 msgid "In fact, the last code example, showing the injected `UserInfo`, is a concrete example of the access token propagation, in this case, Quarkus propagates the Auth0 access token to the Auth0 `UserInfo` endpoint to acquire `UserInfo`. Quarkus does it without users having to do anything themselves."
 msgstr ""
 
-#. type: delimited block =
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "But what about propagating access tokens to some custom services ? It is very easy to achieve in Quarkus, both for the authorization code and bearer token flows. All you need to do is to create a Reactive REST Client interface for calling the service requiring a Bearer token access and annotate it with `@AccessToken` and the access token arriving to the frontend endpoint as the Auth0 Bearer access token or acquired by Quarkus after completing the Auth0 authorization code flow, will be propagated to the target microservice. This is as easy as it can get."
+msgid "But what about propagating access tokens to some custom services ? It is very easy to achieve in Quarkus, both for the authorization code and bearer token flows. All you need to do is to create a Reactive REST Client interface for calling the service requiring a Bearer token access and annotate it with `@AccessToken` and the access token arriving to the front-end endpoint as the Auth0 Bearer access token or acquired by Quarkus after completing the Auth0 authorization code flow, will be propagated to the target microservice. This is as easy as it can get."
 msgstr ""
 
-#. type: delimited block =
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "Please see xref:security-openid-connect-client-reference.adoc#reactive-token-propagation[OIDC token propagation] for more information about the token propagation and the following sections in this tutorial for a concrete example."
+msgid ""
+"For examples of propagating access tokens, see the following sections in this tutorial.\n"
+"For more information about token propagation, see xref:security-openid-connect-client-reference.adoc#reactive-token-propagation[OIDC token propagation]."
 msgstr ""
 
 #. type: Title ===
@@ -666,9 +652,8 @@ msgstr ""
 msgid "We have already looked in detail at how Quarkus OIDC can handle xref:opaque-access-tokens[Access Quarkus with opaque Auth0 access tokens], but we don't want to propagate Auth0 opaque tokens to micro services which do something useful on behalf on the currently authenticated user, beyond checking its UserInfo."
 msgstr ""
 
-#. type: delimited block =
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "A microservice which the frontend Quarkus application will access by propagating authorization code flow access tokens to it is represented in the Auth0 dashboard as an `API`. Lets add it in the `Applications/APIs`:"
+msgid "A microservice which the front-end Quarkus application will access by propagating authorization code flow access tokens to it is represented in the Auth0 dashboard as an `API`. Lets add it in the `Applications/APIs`:"
 msgstr ""
 
 #. type: delimited block =
@@ -729,9 +714,8 @@ msgstr ""
 msgid "Propagate access token as an HTTP `Authorization: Bearer accesstoken` header"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "And update the configuration for the Quarkus frontend application, `GreetingResource`, which has been created earlier, to request that an authorization code flow access token (as opposed to ID token) includes an `aud` (audience) claim targeting `ApiEchoService`, as well as configure the base URL for the `ApiEchoService` REST client:"
+msgid "And update the configuration for the Quarkus front-end application, `GreetingResource`, which has been created earlier, to request that an authorization code flow access token (as opposed to ID token) includes an `aud` (audience) claim targeting `ApiEchoService`, as well as configure the base URL for the `ApiEchoService` REST client:"
 msgstr ""
 
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
@@ -740,9 +724,8 @@ msgid ""
 "It will ensure that the access token is issued in the JWT format and includes an `aud` (audience) claim which will contain `https://quarkus-auth0`."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "Point `ApiEchoServiceClient` to the `ApiEchoService` endpoint. HTTP port in the `org.acme.ApiEchoServiceClient/mp-rest/url=http://localhost:${port}` property is parameterized to ensure the correct URL is built in dev, test and prod modes."
+msgid "Point `ApiEchoServiceClient` to the `ApiEchoService` endpoint. HTTP port in the `org.acme.ApiEchoServiceClient/mp-rest/url=http://localhost:${port}` property is parameterized to ensure the correct URL is built while using the dev, test and prod modes."
 msgstr ""
 
 #. type: Plain text
@@ -771,14 +754,12 @@ msgstr ""
 msgid "Permission Based Access Control"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "We have discussed in the xref:role-based-access-control[Role Based Access Control] section how to get Quarkus to check a namespace qualified claim containing user roles and use this information to enforce Role Based Access Control. You have configured Auth0 to add the custom roles claim to both ID and access tokens."
+msgid "We have discussed in the xref:role-based-access-control[Role-based access control] section how to get Quarkus to check a namespace qualified claim containing user roles and use this information to enforce role-based access control. You have configured Auth0 to add the custom roles claim to both ID and access tokens."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "However, Permission Based Access Control is better suited to the case where an access token is propagated by the frontend endpoint to a microservice which will check if a given access token has been authorized for this service to perform a concrete action, as opposed to this token vouching for a user be in a specific role. For example, being in the admin role does not necessarily mean the user is allowed to have a read and write access to some of this microservice's content."
+msgid "However, Permission Based Access Control is better suited to the case where an access token is propagated by the front-end endpoint to a microservice which will check if a given access token has been authorized for this service to perform a concrete action, as opposed to this token vouching for a user be in a specific role. For example, being in the admin role does not necessarily mean the user is allowed to have a read and write access to some of this microservice's content."
 msgstr ""
 
 #. type: Plain text
@@ -857,14 +838,12 @@ msgstr ""
 msgid "Press `r` and notice this test failing with `403` which is expected because the test does not send a token to the endpoint:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "Before fixing the test, let's review the options available for testing Quarkus endpoints secured by OIDC. These options may vary depending on what flow your application supports and how you prefer to test. Endpoints which use OIDC authorization code flow can be tested using xref:security-oidc-code-flow-authentication#integration-testing[one of these options] and endpoints which use Bearer token authentication can be tested using xref:security-oidc-bearer-token-authentication#integration-testing[one of these options]."
+msgid "Before fixing the test, let's review the options available for testing Quarkus endpoints secured by OIDC. These options might vary, depending on which flow your application supports and how you prefer to test. Endpoints which use OIDC authorization code flow can be tested using xref:security-oidc-code-flow-authentication#integration-testing[one of these options] and endpoints which use Bearer token authentication can be tested using xref:security-oidc-bearer-token-authentication#integration-testing[one of these options]."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "As you can see, testing of the endpoints secured with Auth0 can be done with the help of `Wiremock`, or `@TestSecurity` annotation. Please experiment with writing such tests on your own and reach out if you encounter any problems."
+msgid "As you can see, testing of the endpoints secured with Auth0 can be done with the help of `Wiremock`, or `@TestSecurity` annotation. Experiment with writing such tests on your own and reach out if you encounter any problems."
 msgstr ""
 
 #. type: Plain text
@@ -892,9 +871,8 @@ msgstr ""
 msgid "It is important to clarify that we do not recommend using the deprecated OAuth2 `password` token grant in production. However using it can help testing the endpoint with tokens acquired from the live dev Auth0 tenant."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "`OidcTestClient` should be used to test applications accepting bearer tokens which will work for the endpoint developed in this tutorial as it supports both authorization code flow and bearer token authentication. You would need to use OIDC WireMock or `HtmlUnit` directly against the Auth0 dev tenant if only the authorization code flow was supported - in the latter case `HtmlUnit` test code would have to be aligned with how Auth0 challenges users to enter their credentials - please copy and paste an xref:security-oidc-code-flow-authentication#integration-testing-wiremock[HtmlUnit test fragment] from the documentation and experiment if you would like."
+msgid "`OidcTestClient` should be used to test applications accepting bearer tokens which will work for the endpoint developed in this tutorial as it supports both authorization code flow and bearer token authentication. You would need to use OIDC WireMock or `HtmlUnit` directly against the Auth0 dev tenant if only the authorization code flow was supported - in the latter case `HtmlUnit` test code would have to be aligned with how Auth0 challenges users to enter their credentials. If you like, you can copy the xref:security-oidc-code-flow-authentication#integration-testing-wiremock[HtmlUnit test fragment] from the documentation and experiment with it."
 msgstr ""
 
 #. type: Plain text
@@ -913,9 +891,8 @@ msgstr ""
 msgid "build.gradle"
 msgstr "build.gradle"
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "which provides a utility class `io.quarkus.test.oidc.client.OidcTestClient` which can be used in tests for acquiring access tokens (This dependency also offers an OIDC WireMock support - please review the documentation how to use it for testing if you would like)."
+msgid "which provides a utility class `io.quarkus.test.oidc.client.OidcTestClient` which can be used in tests for acquiring access tokens (This dependency also offers an OIDC WireMock support - review the documentation how to use it for testing if you want)."
 msgstr ""
 
 #. type: Plain text
@@ -938,9 +915,8 @@ msgstr ""
 msgid "Press `r` again and have the test passing:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "By the way, if you would like you can run the tests in Continuous mode directly from DevUI:"
+msgid "By the way, if you like, you can run the tests in Continuous mode directly from DevUI:"
 msgstr ""
 
 #. type: Title ==
@@ -1006,9 +982,8 @@ msgstr ""
 msgid "Troubleshooting"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-auth0-tutorial.adoc
-msgid "The steps described in this tutorial should work exactly as the tutorial describes. You may have to clear the browser cookies when accessing the updated Quarkus endpoint if you have already completed the authentication. You might need to restart the Quarkus application manually in devmode but it is not expected. Please get in touch with the Quarkus team if you need help completing this tutorial."
+msgid "The steps described in this tutorial should work exactly as the tutorial describes. You might have to clear the browser cookies when accessing the updated Quarkus endpoint if you have already completed the authentication. You might need to restart the Quarkus application manually in devmode but it is not expected. If you need help completing this tutorial, you can get in touch with the Quarkus team."
 msgstr ""
 
 #. type: Title ==
@@ -1021,7 +996,7 @@ msgstr ""
 msgid ""
 "This tutorial demonstrated how Quarkus endpoints can be secured with the `quarkus-oidc` extension and Auth0 using Authorization code and Bearer token authentication flows, with both flows being supported by the same endpoint code.\n"
 "Without writing a single line of code, you have added support for the custom Auth0 logout flow and enabled role-based access control with a custom Auth0 namespace qualified claim.\n"
-"Token propagation from the frontend endpoint to the microservice endpoint has been achieved by adding the `@AccessToken` annotation to the microservice REST client.\n"
+"Token propagation from the front-end endpoint to the microservice endpoint has been achieved by adding the `@AccessToken` annotation to the microservice REST client.\n"
 "Microservice endpoint activated the permission-based access control with the `@PermissionsAllowed` annotation.\n"
 "You used Quarkus dev mode to update the code and configuration without restarting the endpoint, and you also used the OIDC Dev UI to visualize and test Auth0 tokens.\n"
 "You used the continuous testing feature of Quarkus to complement OIDC Dev UI tests with integration tests against the live Auth0 development tenant.\n"

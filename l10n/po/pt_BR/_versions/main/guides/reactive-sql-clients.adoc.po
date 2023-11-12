@@ -792,7 +792,7 @@ msgstr ""
 #: _versions/main/guides/reactive-sql-clients.adoc
 msgid ""
 "The `max-lifetime` is disabled by default but is an important configuration when using a credentials\n"
-"provider that provides time limited credentials, like the link:credentials-provider.adoc[Vault credentials provider]."
+"provider that provides time limited credentials, like the xref:credentials-provider.adoc[Vault credentials provider]."
 msgstr ""
 
 #. type: Plain text
