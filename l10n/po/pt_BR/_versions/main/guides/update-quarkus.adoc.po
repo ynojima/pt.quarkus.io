@@ -93,10 +93,9 @@ msgstr ""
 msgid "Using Quarkus CLI"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/update-quarkus.adoc
-msgid "Optional: To specify a particular stream, use the `stream` option; for example: `--stream=3.0`"
-msgstr "Opcional: Para especificar uma versão, utilize a opção `stream`; por exemplo: `--stream=3.0`"
+msgid "Optional: To specify a particular stream, use the `--stream` option; for example: `--stream=3.2`"
+msgstr ""
 
 #. type: Block title
 #: _versions/main/guides/update-quarkus.adoc
@@ -104,10 +103,9 @@ msgstr "Opcional: Para especificar uma versão, utilize a opção `stream`; por 
 msgid "Using Maven"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/update-quarkus.adoc
-msgid "Optional: To specify a particular stream, use the `Dstream` option; for example: `-Dstream=3.0`"
-msgstr "Opcional: Para especificar uma versão, utilize a opção `Dstream`; por exemplo: `-Dstream=3.0`"
+msgid "Optional: To specify a particular stream, use the `-Dstream` option; for example: `-Dstream=3.2`"
+msgstr ""
 
 #. type: delimited block *
 #: _versions/main/guides/update-quarkus.adoc

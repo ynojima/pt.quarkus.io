@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-11-03 22:08+0900\n"
+"POT-Creation-Date: 2023-11-19 08:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1096,12 +1096,6 @@ msgstr ""
 msgid "cloud, core"
 msgstr ""
 
-#. type: Array Element: types tutorial extensions
-#: upstream/_data/versioned/latest/index/quarkus.yaml:0
-#, no-wrap
-msgid "io.quarkus:quarkus-core"
-msgstr ""
-
 #. type: Hash Value: types guide filename
 #: upstream/_data/versioned/latest/index/quarkus.yaml:0
 #, no-wrap
@@ -1855,7 +1849,7 @@ msgstr ""
 #. type: Array Element: types reference topics
 #: upstream/_data/versioned/latest/index/quarkus.yaml:0
 #, no-wrap
-msgid "devmode"
+msgid "dev-mode"
 msgstr ""
 
 #. type: Hash Value: types guide url
@@ -2095,7 +2089,7 @@ msgstr ""
 #. type: Array Element: types tutorial topics
 #: upstream/_data/versioned/latest/index/quarkus.yaml:0
 #, no-wrap
-msgid "devservices"
+msgid "dev-services"
 msgstr ""
 
 #. type: Hash Value: types guide url
@@ -3248,6 +3242,12 @@ msgstr ""
 #: upstream/_data/versioned/latest/index/quarkus.yaml:0
 #, no-wrap
 msgid "hibernate-search-orm-elasticsearch.adoc"
+msgstr ""
+
+#. type: Hash Value: types guide keywords
+#: upstream/_data/versioned/latest/index/quarkus.yaml:0
+#, no-wrap
+msgid "elasticsearch hibernate orm search"
 msgstr ""
 
 #. type: Hash Value: types guide summary

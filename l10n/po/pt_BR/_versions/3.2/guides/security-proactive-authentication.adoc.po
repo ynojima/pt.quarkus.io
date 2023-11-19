@@ -64,9 +64,8 @@ msgid ""
 "The same is also valid for xref:reactive-routes.adoc[Reactive routes] if a route response is synchronous."
 msgstr ""
 
-#. type: Plain text
 #: _versions/3.2/guides/security-proactive-authentication.adoc
-msgid "xref:security-authorization.adoc#standard-security-annotations[Standard security annotations] on CDI beans are not supported on an I/O thread if a non-void secured method returns a value synchronously and proactive authentication is disabled because they need to access `SecurityIdentity`."
+msgid "xref:security-authorize-web-endpoints-reference.adoc#standard-security-annotations[Standard security annotations] on CDI beans are not supported on an I/O thread if a non-void secured method returns a value synchronously and proactive authentication is disabled because they need to access `SecurityIdentity`."
 msgstr ""
 
 #: _versions/3.2/guides/security-proactive-authentication.adoc

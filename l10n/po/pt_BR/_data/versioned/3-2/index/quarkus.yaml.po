@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-11-12 08:30+0000\n"
+"POT-Creation-Date: 2023-11-19 08:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -259,7 +259,7 @@ msgstr ""
 #. type: Hash Value: types tutorial categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "security, web"
+msgid "web, security"
 msgstr ""
 
 #. type: Hash Value: types concepts filename
@@ -577,7 +577,7 @@ msgstr ""
 #. type: Hash Value: types concepts categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "contributing, security"
+msgid "security, contributing"
 msgstr ""
 
 #. type: Hash Value: types concepts filename
@@ -787,7 +787,7 @@ msgstr ""
 #. type: Hash Value: types guide categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "core, cloud"
+msgid "cloud, core"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -1363,7 +1363,7 @@ msgstr ""
 #. type: Hash Value: types guide categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "native, cloud"
+msgid "cloud, native"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -1591,7 +1591,7 @@ msgstr ""
 #. type: Hash Value: types guide categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "tooling, data"
+msgid "data, tooling"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -3013,7 +3013,7 @@ msgstr ""
 #. type: Hash Value: types guide categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "tooling, native"
+msgid "native, tooling"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -3355,7 +3355,7 @@ msgstr ""
 #. type: Hash Value: types guide categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "alt-languages, data"
+msgid "data, alt-languages"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -3457,7 +3457,7 @@ msgstr ""
 #. type: Hash Value: types guide categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "observability, web"
+msgid "web, observability"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -3583,7 +3583,7 @@ msgstr ""
 #. type: Hash Value: types guide categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "tooling, core, native"
+msgid "core, native, tooling"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -3619,7 +3619,7 @@ msgstr ""
 #. type: Hash Value: types guide categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "core, native, writing-extensions"
+msgid "writing-extensions, core, native"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -4603,7 +4603,7 @@ msgstr ""
 #. type: Hash Value: types guide categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "data, web"
+msgid "web, data"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -4633,7 +4633,7 @@ msgstr ""
 #. type: Hash Value: types guide categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "serialization, web"
+msgid "web, serialization"
 msgstr ""
 
 #. type: Hash Value: types guide filename
@@ -5107,7 +5107,7 @@ msgstr ""
 #. type: Hash Value: types reference categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "core, observability, getting-started"
+msgid "observability, core, getting-started"
 msgstr ""
 
 #. type: Hash Value: types reference filename
@@ -5551,7 +5551,7 @@ msgstr ""
 #. type: Hash Value: types tutorial categories
 #: upstream/_data/versioned/3-2/index/quarkus.yaml:0
 #, no-wrap
-msgid "native, getting-started"
+msgid "getting-started, native"
 msgstr ""
 
 #. type: Hash Value: types tutorial filename

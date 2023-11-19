@@ -285,7 +285,7 @@ msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
-"Some OIDC providers require authenticating to its introspection endpoint by using Basic authentication and with credentials that are different to the `client_id` and `client_secret`.\n"
+"Some OIDC providers require authenticating to its introspection endpoint by using Basic authentication and with credentials that are different from the `client_id` and `client_secret`.\n"
 "If you have previously configured security authentication to support either the`client_secret_basic` or `client_secret_post` client authentication methods as described in the xref:oidc-provider-client-authentication[OIDC provider client authentication]  section, you might need to apply the additional configuration, as follows."
 msgstr ""
 
@@ -299,7 +299,9 @@ msgid "OIDC request customization"
 msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "You can customize OIDC requests made by Quarkus to the OIDC provider by registering one or more `OidcRequestFiler` implementations which can update or add new request headers, please see xref:security-openid-connect-client-reference#oidc-client-filters[Client request customization] for more information."
+msgid ""
+"You can customize OIDC requests made by Quarkus to the OIDC provider by registering one or more `OidcRequestFiler` implementations, which can update or add new request headers.\n"
+"For more information, see xref:security-openid-connect-client-reference#oidc-client-filters[Client request customization]."
 msgstr ""
 
 #. type: Title ====
@@ -339,9 +341,8 @@ msgstr ""
 msgid "Customizing authentication requests"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "By default, only the `response_type` (set to `code`), `scope` (set to 'openid'), `client_id`, `redirect_uri` and `state` properties are passed as HTTP query parameters to the OpenID Connect provider's authorization endpoint when the user is redirected to it to authenticate."
+msgid "By default, only the `response_type` (set to `code`), `scope` (set to `openid`), `client_id`, `redirect_uri`, and `state` properties are passed as HTTP query parameters to the OpenID Connect provider's authorization endpoint when the user is redirected to it to authenticate."
 msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
@@ -416,9 +417,8 @@ msgstr ""
 msgid "Access Token is usually used by the OIDC `web-app` application to access other endpoints on behalf of the currently logged-in user. The raw access token can be accessed as follows:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "Note that `AccessTokenCredential` is used if the access token issued to the Quarkus `web-app` application is opaque (binary) and can not be parsed to a `JsonWebToken` or if the inner content is necessary for the application."
+msgid "Note that `AccessTokenCredential` is used if the access token issued to the Quarkus `web-app` application is opaque (binary) and cannot be parsed to a `JsonWebToken` or if the inner content is necessary for the application."
 msgstr ""
 
 #. type: Plain text
@@ -510,7 +510,7 @@ msgstr ""
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
 "A core part of the authentication process is ensuring the chain of trust and validity of the information.\n"
-"This is done by ensuring tokens are trustable."
+"This is done by ensuring tokens can be trusted."
 msgstr ""
 
 #. type: Title ====
@@ -540,12 +540,11 @@ msgstr ""
 msgid ""
 "Code flow access tokens are not introspected unless they are expected to be the source of roles.\n"
 "They will however be used to get `UserInfo`.\n"
-"There will be one or two remote calls with the code flow access token, if the token introspection and/or `UserInfo` are required."
+"There will be one or two remote calls with the code flow access token, if the token introspection, `UserInfo`, or both are required."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "Please see xref:security-oidc-bearer-token-authentication.adoc#token-introspection-userinfo-cache[Token Introspection and UserInfo cache] for more information about using a default token cache or registering a custom cache implementation."
+msgid "For more information about using a default token cache or registering a custom cache implementation, see xref:security-oidc-bearer-token-authentication.adoc#token-introspection-userinfo-cache[Token Introspection and UserInfo cache]."
 msgstr ""
 
 #. type: Title ====
@@ -556,7 +555,7 @@ msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
-"Please see xref:security-oidc-bearer-token-authentication.adoc#jwt-claim-verification[JSON Web Token Claim verification] section about the claim verification, including the `iss` (issuer) claim.\n"
+"For information about the claim verification, including the `iss` (issuer) claim, see the xref:security-oidc-bearer-token-authentication.adoc#jwt-claim-verification[JSON Web Token Claim verification] section.\n"
 "It applies to ID tokens but also to access tokens in a JWT format if the `web-app` application has requested the access token verification."
 msgstr ""
 
@@ -583,7 +582,9 @@ msgid "You can enable `PKCE` for your OIDC `web-app` endpoint with a `quarkus.oi
 msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "If you already have a 32-characters client secret then you do not need to set the  `quarkus.oidc.authentication.pkce-secret` property unless you prefer to use a different secret key. This secret will be auto-generated if it is not configured and if the fallback to the client secret is not possible in case of the client secret being less than 16 characters long."
+msgid ""
+"If you already have a 32-characters client secret then you do not need to set the  `quarkus.oidc.authentication.pkce-secret` property unless you prefer to use a different secret key.\n"
+"This secret will be autogenerated if it is not configured and if the fallback to the client secret is not possible in case of the client secret being less than 16 characters long."
 msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
@@ -682,9 +683,8 @@ msgstr ""
 msgid "OIDC `CodeAuthenticationMechanism` uses the default `io.quarkus.oidc.TokenStateManager` interface implementation to keep the ID, access, and refresh tokens returned in the authorization code or refresh grant responses in an encrypted session cookie."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "It makes Quarkus OIDC endpoints completely stateless and it is recommended to follow this strategy in order to achieve the best scalability results."
+msgid "It makes Quarkus OIDC endpoints completely stateless and it is recommended to follow this strategy to achieve the best scalability results."
 msgstr ""
 
 #. type: Plain text
@@ -815,7 +815,7 @@ msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
-"For example, you may want to keep the tokens in a cache cluster and have only a key stored in a session cookie.\n"
+"For example, you might want to keep the tokens in a cache cluster and have only a key stored in a session cookie.\n"
 "Note that this approach might introduce some challenges if you need to make the tokens available across multiple microservices nodes."
 msgstr ""
 
@@ -862,13 +862,12 @@ msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
-"Depending on your database, please include and configure exactly one xref:reactive-sql-clients.adoc[Reactive SQL client].\n"
-"Following Reactive SQL clients are supported:"
+"Depending on your database, include and configure exactly one xref:reactive-sql-clients.adoc[Reactive SQL client].\n"
+"The following Reactive SQL clients are supported:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "Reactive MS SQL client"
+msgid "Reactive Microsoft SQL client"
 msgstr ""
 
 #. type: Plain text
@@ -896,14 +895,12 @@ msgstr ""
 msgid "Your application is not required to switch to using the Reactive SQL client if it already uses Hibernate ORM with one of the JDBC driver extensions."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "Let's say you already have application that is using the Hibernate ORM extension together with a PostgreSQL JDBC Driver and your datasource is configured like this:"
+msgid "For example, you already have an application that is using the Hibernate ORM extension together with a PostgreSQL JDBC Driver and your datasource is configured like this:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "Now, if you decided to use OIDC Database Token State Manager, you need to add following dependencies and set a reactive driver URL."
+msgid "Now, if you decided to use OIDC Database Token State Manager, you need to add the following dependencies and set a reactive driver URL."
 msgstr ""
 
 #. type: Block title
@@ -929,9 +926,10 @@ msgid ""
 "Should you want the Hibernate ORM extension to create this table instead, you simply need to include an Entity like this one:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "The Hibernate ORM extension will only create this table for you when database schema is generated. Please refer to the xref:hibernate-orm.adoc[Hibernate ORM] guide for more information."
+msgid ""
+"The Hibernate ORM extension will only create this table for you when database schema is generated.\n"
+"For more information, refer to the xref:hibernate-orm.adoc[Hibernate ORM] guide."
 msgstr ""
 
 #. type: Plain text
@@ -964,22 +962,26 @@ msgstr ""
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
 "Users can request a logout by sending a request to the Quarkus endpoint logout path set with a `quarkus.oidc.logout.path` property.\n"
-"For example, if the endpoint address is `https://application.com/webapp` and the `quarkus.oidc.logout.path` is set to \"/logout\" then the logout request has to be sent to `https://application.com/webapp/logout`."
+"For example, if the endpoint address is `https://application.com/webapp` and the `quarkus.oidc.logout.path` is set to \"/logout\", then the logout request has to be sent to `https://application.com/webapp/logout`."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "This logout request will start an https://openid.net/specs/openid-connect-session-1_0.html#RPLogout[RP-Initiated Logout] and the user will be redirected to the OpenID Connect Provider to logout where a user may be asked to confirm the logout is indeed intended."
+msgid ""
+"This logout request starts an https://openid.net/specs/openid-connect-session-1_0.html#RPLogout[RP-Initiated Logout].\n"
+"The user will be redirected to the OpenID Connect provider to log out, where they can be asked to confirm the logout is indeed intended."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "The user will be returned to the endpoint post logout page once the logout has been completed if the `quarkus.oidc.logout.post-logout-path` property is set. For example, if the endpoint address is `https://application.com/webapp` and the `quarkus.oidc.logout.post-logout-path` is set to \"/signin\" then the user will be returned to `https://application.com/webapp/signin` (note this URI must be registered as a valid `post_logout_redirect_uri` in the OpenID Connect Provider)."
+msgid ""
+"The user will be returned to the endpoint post-logout page once the logout has been completed if the `quarkus.oidc.logout.post-logout-path` property is set.\n"
+"For example, if the endpoint address is `https://application.com/webapp` and the `quarkus.oidc.logout.post-logout-path` is set to \"/signin\", then the user will be returned to `https://application.com/webapp/signin`.\n"
+"Note, this URI must be registered as a valid `post_logout_redirect_uri` in the OpenID Connect provider."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "If the `quarkus.oidc.logout.post-logout-path` is set then a `q_post_logout` cookie will be created and a matching `state` query parameter will be added to the logout redirect URI and the OpenID Connect Provider will return this `state` once the logout has been completed. It is recommended for the Quarkus `web-app` applications to check that a `state` query parameter matches the value of the `q_post_logout` cookie which can be done for example in a Jakarta REST filter."
+msgid ""
+"If the `quarkus.oidc.logout.post-logout-path` is set, then a `q_post_logout` cookie will be created and a matching `state` query parameter will be added to the logout redirect URI and the OpenID Connect Provider will return this `state` once the logout has been completed.\n"
+"It is recommended for the Quarkus `web-app` applications to check that a `state` query parameter matches the value of the `q_post_logout` cookie which can be done for example in a Jakarta REST filter."
 msgstr ""
 
 #. type: Plain text
@@ -994,7 +996,7 @@ msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
-"You may also need to set `quarkus.oidc.authentication.cookie-path` to a path value common to all the application resources which is `/` in this example.\n"
+"You might also need to set `quarkus.oidc.authentication.cookie-path` to a path value common to all the application resources which is `/` in this example.\n"
 "For more information, see the xref:oidc-cookies[Cookies] section."
 msgstr ""
 
@@ -1022,18 +1024,17 @@ msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
-"The OIDC provider can force the logout of all applications using the authentification data: this is called back-channel logout.\n"
-"In this case the OIDC will call a specific URL from each application to trigger that logout."
+"The OIDC provider can force the logout of all applications using the authentication data.\n"
+"This is known as back-channel logout.\n"
+"In this case, the OIDC will call a specific URL from each application to trigger that logout."
 msgstr ""
 
-#. type: delimited block =
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "link:https://openid.net/specs/openid-connect-backchannel-1_0.html[Back-Channel Logout] is used by OpenID Connect providers to log out the current user from all the applications this user is currently logged in, bypassing the user agent."
+msgid "link:https://openid.net/specs/openid-connect-backchannel-1_0.html[Back-channel logout] is used by OpenID Connect providers to log out the current user from all the applications this user is currently logged in, bypassing the user agent."
 msgstr ""
 
-#. type: delimited block =
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "You can configure Quarkus to support `Back-Channel Logout` as follows:"
+msgid "You can configure Quarkus to support back-channel logout as follows:"
 msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
@@ -1056,8 +1057,8 @@ msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
-"link:https://openid.net/specs/openid-connect-frontchannel-1_0.html[Front-Channel Logout] can be used to logout the current user directly from the user agent (e.g. its browser).\n"
-"It is like xref:back-channel-logout[Back-channel logout] but the logout steps are executed by the user agent like the browser and not in the background by the OIDP provider.\n"
+"You can use link:https://openid.net/specs/openid-connect-frontchannel-1_0.html[Front-channel logout] to log out the current user directly from the user agent, for example, its browser.\n"
+"It is like xref:back-channel-logout[Back-channel logout] but the logout steps are executed by the user agent like the browser and not in the background by the OIDC provider.\n"
 "This option is rarely used."
 msgstr ""
 
@@ -1153,7 +1154,7 @@ msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
-"If the `quarkus.oidc.token.refresh-expired` is set to `true`, then the expired ID token (as well as the access token) is refreshed by using the refresh token returned with the initial authorization code grant response.\n"
+"If the `quarkus.oidc.token.refresh-expired` is set to `true`, then the expired ID token (and the access token) is refreshed by using the refresh token returned with the initial authorization code grant response.\n"
 "This refresh token might also be recycled (refreshed) itself as part of this process.\n"
 "As a result, the new session cookie is created and the session is extended."
 msgstr ""
@@ -1226,7 +1227,7 @@ msgstr ""
 msgid ""
 "Even though you configure the extension to support the authorization code flows without `IdToken`, an internal `IdToken` is generated to standardize the way `quarkus-oidc` operates.\n"
 "You use an `IdToken` to support the authentication session and to avoid redirecting the user to the provider,  such as GitHub, on every request.\n"
-"In this case, the session lifespan is set to 5 minutes, which you can can extend further as described in the xref:session-management[session management] section."
+"In this case, the session lifespan is set to 5 minutes, which you can extend further as described in the xref:session-management[session management] section."
 msgstr ""
 
 #. type: Plain text
@@ -1252,21 +1253,25 @@ msgid ""
 "For more information, see the xref:security-oidc-bearer-token-authentication.adoc#token-introspection-userinfo-cache[Token Introspection and UserInfo cache] section of the \"OpenID Connect (OIDC) Bearer token authentication\" guide."
 msgstr ""
 
-#. type: delimited block =
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "Alternatively, you may want to request that `UserInfo` is embedded into the internal generated `IdToken` with the `quarkus.oidc.cache-user-info-in-idtoken=true` property - the advantage of this approach is that by default no cached `UserInfo` state will be kept with the endpoint - instead it will be stored in a session cookie. You may also want to consider encrypting `IdToken` in this case if `UserInfo` contains sensitive data. For more information, see xref:token-state-manager[Encrypt tokens with TokenStateManager]."
+msgid ""
+"Alternatively, you might want to request that `UserInfo` is embedded into the internal generated `IdToken` with the `quarkus.oidc.cache-user-info-in-idtoken=true` property.\n"
+"The advantage of this approach is that, by default, no cached `UserInfo` state will be kept with the endpoint - instead it will be stored in a session cookie.\n"
+"You might also want to consider encrypting `IdToken` in this case if `UserInfo` contains sensitive data.\n"
+"For more information, see xref:token-state-manager[Encrypt tokens with TokenStateManager]."
 msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
 "OAuth2 servers might not support a well-known configuration endpoint.\n"
-"In this case, you must disable the discovery and configure the authorization, token, and introspection and the userinfo endpoint paths manually."
+"In this case, you must disable the discovery and configure the authorization, token, and introspection and `UserInfo` endpoint paths manually."
 msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
-"For well-known OIDC or OAuth2 providers, like Apple, Facebook, GitHub, Google, Microsoft, Spotify, and Twitter, Quarkus can help significantly simplify your application's configuration with the `quarkus.oidc.provider` property.\n"
-"Here is how you can integrate `quarkus-oidc` with GitHub after you have link:https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app[created a GitHub OAuth application]. Configure your Quarkus endpoint like this:"
+"For well-known OIDC or OAuth2 providers, such as Apple, Facebook, GitHub, Google, Microsoft, Spotify, and Twitter, Quarkus can help significantly simplify your application's configuration with the `quarkus.oidc.provider` property.\n"
+"Here is how you can integrate `quarkus-oidc` with GitHub after you have link:https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app[created a GitHub OAuth application].\n"
+"Configure your Quarkus endpoint like this:"
 msgstr ""
 
 #. type: Plain text
@@ -1294,9 +1299,10 @@ msgstr ""
 msgid "Possibly a simpler alternative is to inject both `@IdToken JsonWebToken` and `UserInfo` and use `JsonWebToken` when dealing with the providers returning `IdToken` and `UserInfo` with the providers which do not return `IdToken`."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "You must ensure that the callback path you enter in the GitHub OAuth application configuration matches the endpoint path where you'd like the user be redirected to after a successful GitHub authentication and application authorization, in this case it has to be set to `http:localhost:8080/github/userinfo`."
+msgid ""
+"You must ensure that the callback path you enter in the GitHub OAuth application configuration matches the endpoint path where you want the user to be redirected after a successful GitHub authentication and application authorization.\n"
+"In this case, it has to be set to `http:localhost:8080/github/userinfo`."
 msgstr ""
 
 #. type: Title ===
@@ -1308,7 +1314,7 @@ msgstr ""
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
 "You can register the `@ApplicationScoped` bean which will observe important OIDC authentication events.\n"
-"When a user logs in for the first time, reauthenticates, or refreshes the session, the listener is updated.\n"
+"When a user logs in for the first time, re-authenticates, or refreshes the session, the listener is updated.\n"
 "In the future, more events might be reported.\n"
 "For example:"
 msgstr ""
@@ -1330,9 +1336,8 @@ msgstr ""
 msgid "Integration considerations"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "Your application secured by OIDC integrates in an environment where it can be called from single-page applications, needs to work with well-known OIDC providers, run behind HTTP Reverse Proxy, require external and internal access, etc."
+msgid "Your application secured by OIDC integrates in an environment where it can be called from single-page applications, needs to work with well-known OIDC providers, run behind HTTP Reverse Proxy, require external and internal access, and so on."
 msgstr ""
 
 #. type: Plain text
@@ -1433,29 +1438,26 @@ msgstr ""
 msgid "Running Quarkus application behind a reverse proxy"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "OIDC authentication mechanism can be affected if your Quarkus application is running behind a reverse proxy/gateway/firewall when HTTP `Host` header may be reset to the internal IP address, HTTPS connection may be terminated, etc. For example, an authorization code flow `redirect_uri` parameter may be set to the internal host instead of the expected external one."
+msgid ""
+"OIDC authentication mechanism can be affected if your Quarkus application is running behind a reverse proxy, gateway, or firewall when HTTP `Host` header might be reset to the internal IP address, HTTPS connection might be terminated, and so on.\n"
+"For example, an authorization code flow `redirect_uri` parameter might be set to the internal host instead of the expected external one."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "In such cases configuring Quarkus to recognize the original headers forwarded by the proxy will be required, for more information, see the xref:http-reference.adoc#reverse-proxy[Running behind a reverse proxy] Vert.x documentation section."
+msgid ""
+"In such cases, configuring Quarkus to recognize the original headers forwarded by the proxy will be required.\n"
+"For more information, see the xref:http-reference.adoc#reverse-proxy[Running behind a reverse proxy] Vert.x documentation section."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "For example, if your Quarkus endpoint runs in a cluster behind Kubernetes Ingress then a redirect from the OpenID Connect Provider back to this endpoint may not work since the calculated `redirect_uri` parameter may point to the internal endpoint address. This problem can be resolved with the following configuration:"
+msgid ""
+"For example, if your Quarkus endpoint runs in a cluster behind Kubernetes Ingress, then a redirect from the OpenID Connect provider back to this endpoint might not work because the calculated `redirect_uri` parameter might point to the internal endpoint address.\n"
+"You can resolve this problem by using the following configuration, where `X-ORIGINAL-HOST` is set by Kubernetes Ingress to represent the external endpoint address.:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "where `X-ORIGINAL-HOST` is set by Kubernetes Ingress to represent the external endpoint address."
-msgstr ""
-
-#. type: Plain text
-#: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "`quarkus.oidc.authentication.force-redirect-https-scheme` property may also be used when the Quarkus application is running behind an SSL terminating reverse proxy."
+msgid "`quarkus.oidc.authentication.force-redirect-https-scheme` property can also be used when the Quarkus application is running behind an SSL terminating reverse proxy."
 msgstr ""
 
 #. type: Title ===
@@ -1466,34 +1468,35 @@ msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
-"Note that the OpenID Connect Provider externally accessible authorization, logout and other endpoints may have different HTTP(S) URLs compared to the URLs auto-discovered or configured relative to `quarkus.oidc.auth-server-url` internal URL.\n"
-"In such cases an issuer verification failure may be reported by the endpoint and redirects to the externally accessible Connect Provider endpoints may fail."
+"Note that the OpenID Connect provider externally-accessible authorization, logout, and other endpoints can have different HTTP(S) URLs compared to the URLs auto-discovered or configured relative to the `quarkus.oidc.auth-server-url` internal URL.\n"
+"In such cases, the endpoint might report an issuer verification failure and redirects to the externally-accessible OIDC provider endpoints might fail."
 msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
-"In such cases, if you work with Keycloak then please start it with a `KEYCLOAK_FRONTEND_URL` system property set to the externally accessible base URL.\n"
-"If you work with other Openid Connect providers then please check your provider's documentation."
-msgstr ""
-
-#. type: Title ==
-#: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-#, no-wrap
-msgid "OIDC SAML Identity broker"
-msgstr ""
-
-#. type: Plain text
-#: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "If your identity provider does not implement OpenId Connect but only the legacy XML-based SAML2.0 SSO protocol, then Quarkus can not be used as a SAML 2.0 adapter, similarly to how `quarkus-oidc` is used as an OIDC adapter."
+"In such cases, if you work with Keycloak, then start it with a `KEYCLOAK_FRONTEND_URL` system property set to the externally-accessible base URL.\n"
+"If you work with other OpenID Connect providers, check the documentation of your provider."
 msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "However, many OIDC providers such as Keycloak, Okta, Auth0, Microsoft ADFS can offer OIDC to SAML 2.0 bridges. You can create an identity broker connection to SAML 2.0 provider in your OIDC provider and use `quarkus-oidc` to authenticate your users to this SAML 2.0 provider with the OIDC provider coordinating OIDC and  SAML 2.0 communications. As far as Quarkus endpoints are concerned, they can continue using the same Quarkus Security and OIDC API and annotations such as `@Authenticated`, `SecurityIdentity`, etc."
+msgid "OIDC SAML identity broker"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "For example, lets assume `Okta` is your SAML 2.0 provider and `Keycloak` is your OIDC provider. Here is a typical sequence explaining how to configure `Keycloak` to broker with the `Okta` SAML 2.0 provider."
+msgid "If your identity provider does not implement OpenID Connect but only the legacy XML-based SAML2.0 SSO protocol, then Quarkus cannot be used as a SAML 2.0 adapter, similarly to how `quarkus-oidc` is used as an OIDC adapter."
+msgstr ""
+
+#: _versions/main/guides/security-oidc-code-flow-authentication.adoc
+msgid ""
+"However, many OIDC providers such as Keycloak, Okta, Auth0, and Microsoft ADFS offer OIDC to SAML 2.0 bridges.\n"
+"You can create an identity broker connection to a SAML 2.0 provider in your OIDC provider and use `quarkus-oidc` to authenticate your users to this SAML 2.0 provider, with the OIDC provider coordinating OIDC and SAML 2.0 communications.\n"
+"As far as Quarkus endpoints are concerned, they can continue using the same Quarkus Security, OIDC API, annotations such as `@Authenticated`, `SecurityIdentity`, and so on."
+msgstr ""
+
+#: _versions/main/guides/security-oidc-code-flow-authentication.adoc
+msgid ""
+"For example, assume `Okta` is your SAML 2.0 provider and `Keycloak` is your OIDC provider.\n"
+"Here is a typical sequence explaining how to configure `Keycloak` to broker with the `Okta` SAML 2.0 provider."
 msgstr ""
 
 #. type: Plain text
@@ -1506,9 +1509,11 @@ msgstr ""
 msgid "For example, name it as `OktaSaml`:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "Next, configure it to point to a Keycloak SAML broker endpoint. At this point you need to know the name of the Keycloak realm, for example, `quarkus`, and, assuming that the Keycloak SAML broker alias is `saml`, enter the endpoint address as `http:localhost:8081/realms/quarkus/broker/saml/endpoint` and Service provider (SP) entity id as `http:localhost:8081/realms/quarkus`, where `http://localhost:8081` is a Keycloak base address and `saml` is a broker alias:"
+msgid ""
+"Next, configure it to point to a Keycloak SAML broker endpoint.\n"
+"At this point, you need to know the name of the Keycloak realm, for example, `quarkus`, and, assuming that the Keycloak SAML broker alias is `saml`, enter the endpoint address as `http:localhost:8081/realms/quarkus/broker/saml/endpoint`.\n"
+"Enter the service provider (SP) entity ID as `http:localhost:8081/realms/quarkus`, where `http://localhost:8081` is a Keycloak base address and `saml` is a broker alias:"
 msgstr ""
 
 #. type: Plain text
@@ -1516,9 +1521,8 @@ msgstr ""
 msgid "Next, save this SAML integration and note its Metadata URL:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "Next, add SAML Provider to Keycloak:"
+msgid "Next, add a SAML provider to Keycloak:"
 msgstr ""
 
 #. type: Plain text
@@ -1531,24 +1535,30 @@ msgstr ""
 msgid "Now, in the `quarkus` Realm properties, navigate to `Identity Providers` and add a new SAML provider:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "Note the alias is set to `saml`, `Redirect URI` is `http:localhost:8081/realms/quarkus/broker/saml/endpoint` and `Service provider entity id` is `http:localhost:8081/realms/quarkus` - these are the same values you have entered when creating the Okta SAML integration in the previous step."
+msgid "Note the alias is set to `saml`, `Redirect URI` is `http:localhost:8081/realms/quarkus/broker/saml/endpoint` and `Service provider entity ID` is `http:localhost:8081/realms/quarkus` - these are the same values you have entered when creating the Okta SAML integration in the previous step."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "Finally, set `Service entity descriptor` to point to the Okta SAML Intregration Metadata URL you noted at the end of the previous step."
+msgid "Finally, set `Service entity descriptor` to point to the Okta SAML Integration Metadata URL you noted at the end of the previous step."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "Next, if you would like, you can register this Keycloak SAML Provider as a Default Provider by navigating to `Authentication/browser/Identity Provider Redirector config` and setting both `Alias` and `Default Identity Provider` properties to `saml`. If you do not configure it as a Default Provider then, at the authentication time, Keycloak will offer 2 options - authenticate with the SAML provider, and authenticate directly to Keycloak with the name and password."
+msgid ""
+"Next, if you want, you can register this Keycloak SAML Provider as a default provider by navigating to `Authentication/browser/Identity Provider Redirector config` and setting both the `Alias` and `Default Identity Provider` properties to `saml`.\n"
+"If you do not configure it as a default provider then, at authentication time, Keycloak offers 2 options:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "Now configure the Quarkus OIDC `web-app` application to point to the Keycloak `quarkus` realm, `quarkus.oidc.auth-server-url=http://localhost:8180/realms/quarkus` and you are ready to start authenticating your Quarkus users to the Okta SAML 2.0 provider using an OIDC to SAML bridge provided by Keycloak OIDC and Okta SAML 2.0 providers."
+msgid "Authenticate with the SAML provider"
+msgstr ""
+
+#: _versions/main/guides/security-oidc-code-flow-authentication.adoc
+msgid "Authenticate directly to Keycloak with the name and password"
+msgstr ""
+
+#: _versions/main/guides/security-oidc-code-flow-authentication.adoc
+msgid "Now, configure the Quarkus OIDC `web-app` application to point to the Keycloak `quarkus` realm, `quarkus.oidc.auth-server-url=http://localhost:8180/realms/quarkus`, and you are ready to start authenticating your Quarkus users to the Okta SAML 2.0 provider by using an OIDC to SAML bridge that is provided by Keycloak OIDC and Okta SAML 2.0 providers."
 msgstr ""
 
 #. type: Plain text
@@ -1564,7 +1574,7 @@ msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
-"Testing is often tricky when it comes to authentification to a separate OIDC like server.\n"
+"Testing is often tricky when it comes to authentication to a separate OIDC-like server.\n"
 "Quarkus offers several options from mocking to a local run of an OIDC provider."
 msgstr ""
 
@@ -1617,23 +1627,22 @@ msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
-"Using xref:security-openid-connect-dev-services.adoc[Dev Services for Keycloak] is recommended for the integration testing against Keycloak.\n"
-"`Dev Services for Keycloak` will launch and initialize a test container: it will create a `quarkus` realm, a `quarkus-app` client (`secret` secret) and add `alice` (`admin` and `user` roles) and `bob` (`user` role) users, where all of these properties can be customized."
+"Using xref:security-openid-connect-dev-services.adoc[Dev Services for Keycloak] is recommended for integration testing against Keycloak.\n"
+"`Dev Services for Keycloak` will start and initialize a test container: it will create a `quarkus` realm, a `quarkus-app` client (`secret` secret), and add `alice` (`admin` and `user` roles) and `bob` (`user` role) users, where all of these properties can be customized."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "First, prepare `application.properties`. You can start with a completely empty `application.properties` as `Dev Services for Keycloak` will register `quarkus.oidc.auth-server-url` pointing to the running test container as well as `quarkus.oidc.client-id=quarkus-app` and `quarkus.oidc.credentials.secret=secret`."
+msgid ""
+"First, prepare `application.properties`.\n"
+"You can start with a completely empty `application.properties` file as `Dev Services for Keycloak` will register `quarkus.oidc.auth-server-url` pointing to the running test container as well as `quarkus.oidc.client-id=quarkus-app` and `quarkus.oidc.credentials.secret=secret`."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "But if you already have all the required `quarkus-oidc` properties configured then you only need to associate `quarkus.oidc.auth-server-url` with the `prod` profile for `Dev Services for Keycloak`to start a container, for example:"
+msgid "However, if you already have all the required `quarkus-oidc` properties configured, then you only need to associate `quarkus.oidc.auth-server-url` with the `prod` profile for `Dev Services for Keycloak` to start a container, for example:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "If a custom realm file has to be imported into Keycloak before running the tests then you can configure `Dev Services for Keycloak` as follows:"
+msgid "If a custom realm file has to be imported into Keycloak before running the tests, then you can configure `Dev Services for Keycloak` as follows:"
 msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
@@ -1651,7 +1660,7 @@ msgstr ""
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
 "Use `KeycloakTestResourceLifecycleManager` for your tests only if there is a good reason not to use `Dev Services for Keycloak`.\n"
-"If you need to do the integration testing against Keycloak then you are encouraged to do it with xref:integration-testing-keycloak-devservices[Dev services For Keycloak]."
+"If you need to do the integration testing against Keycloak then you are encouraged to do it with xref:integration-testing-keycloak-devservices[Dev services for Keycloak]."
 msgstr ""
 
 #. type: Plain text
@@ -1664,9 +1673,8 @@ msgstr ""
 msgid "which provides `io.quarkus.test.keycloak.server.KeycloakTestResourceLifecycleManager` - an implementation of `io.quarkus.test.common.QuarkusTestResourceLifecycleManager` which starts a Keycloak container."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "And configure the Maven Surefire plugin as follows:"
+msgid "Then, configure the Maven Surefire plugin as follows:"
 msgstr ""
 
 #. type: Plain text
@@ -1676,7 +1684,7 @@ msgstr ""
 
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
 msgid ""
-"And now set the configuration and write the test code the same way as it is described in the xref:integration-testing-wiremock[Wiremock] section.\n"
+"Now, set the configuration and write the test code the same way as it is described in the xref:integration-testing-wiremock[Wiremock] section.\n"
 "The only difference is the name of `QuarkusTestResource`:"
 msgstr ""
 
@@ -1697,9 +1705,8 @@ msgstr ""
 msgid "TestSecurity annotation"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-oidc-code-flow-authentication.adoc
-msgid "See xref:security-oidc-bearer-token-authentication.adoc#integration-testing-security-annotation[Use TestingSecurity with injected JsonWebToken] section for more information about using `@TestSecurity` and `@OidcSecurity` annotations for testing the `web-app` application endpoint code which depends on the injected ID and access `JsonWebToken` as well as `UserInfo` and `OidcConfigurationMetadata`."
+msgid "See the xref:security-oidc-bearer-token-authentication.adoc#integration-testing-security-annotation[Use TestingSecurity with injected JsonWebToken] section for more information about using `@TestSecurity` and `@OidcSecurity` annotations for testing the `web-app` application endpoint code, which depends on the injected ID and access `JsonWebToken` as well as `UserInfo` and `OidcConfigurationMetadata`."
 msgstr ""
 
 #. type: Title ===

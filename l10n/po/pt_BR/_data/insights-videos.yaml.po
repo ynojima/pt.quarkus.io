@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-11-12 08:30+0000\n"
+"POT-Creation-Date: 2023-11-19 08:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,24 +20,6 @@ msgstr ""
 #: upstream/_data/insights-videos.yaml:0
 #, no-wrap
 msgid "Scheduled Podcasts"
-msgstr ""
-
-#. type: Hash Value: futurevideos authors
-#: upstream/_data/insights-videos.yaml:0
-#, no-wrap
-msgid "Andrew Dinn & Dan Heidinga"
-msgstr ""
-
-#. type: Hash Value: futurevideos date
-#: upstream/_data/insights-videos.yaml:0
-#, no-wrap
-msgid "November 13, 2023"
-msgstr ""
-
-#. type: Hash Value: futurevideos title
-#: upstream/_data/insights-videos.yaml:0
-#, no-wrap
-msgid "EPISODE #144: Mandrel, Leyden and OpenJDK"
 msgstr ""
 
 #. type: Hash Value: futurevideos authors
@@ -134,6 +116,30 @@ msgstr ""
 #: upstream/_data/insights-videos.yaml:0
 #, no-wrap
 msgid "Archived Podcast Videos"
+msgstr ""
+
+#. type: Hash Value: pastvideos authors
+#: upstream/_data/insights-videos.yaml:0
+#, no-wrap
+msgid "Andrew Dinn"
+msgstr ""
+
+#. type: Hash Value: pastvideos date
+#: upstream/_data/insights-videos.yaml:0
+#, no-wrap
+msgid "November 13, 2023"
+msgstr ""
+
+#. type: Hash Value: pastvideos link
+#: upstream/_data/insights-videos.yaml:0
+#, no-wrap
+msgid "https://youtube.com/live/Sc9PayXQb7E"
+msgstr ""
+
+#. type: Hash Value: pastvideos title
+#: upstream/_data/insights-videos.yaml:0
+#, no-wrap
+msgid "EPISODE #144: Mandrel and OpenJDK"
 msgstr ""
 
 #. type: Hash Value: pastvideos authors
@@ -3182,12 +3188,6 @@ msgstr ""
 #: upstream/_data/insights-videos.yaml:0
 #, no-wrap
 msgid "EPISODE #08: Mutiny - the reactive library"
-msgstr ""
-
-#. type: Hash Value: pastvideos authors
-#: upstream/_data/insights-videos.yaml:0
-#, no-wrap
-msgid "Andrew Dinn"
 msgstr ""
 
 #. type: Hash Value: pastvideos date

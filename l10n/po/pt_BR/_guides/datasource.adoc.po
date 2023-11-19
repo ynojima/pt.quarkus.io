@@ -1147,15 +1147,14 @@ msgstr "`jdbc:h2:tcp://localhost/~/test`, `jdbc:h2:mem:myDB`"
 
 #: _guides/datasource.adoc
 msgid ""
-"H2 is an embedded database that can run as a server, based on a file, or run completely in memory.\n"
+"H2 is a database that can run in embedded or server mode.\n"
+"It can use a file storage or run entirely in memory.\n"
 "All of these options are available as listed above."
 msgstr ""
 
-#. type: Plain text
 #: _guides/datasource.adoc
-#, fuzzy
-msgid "For more information, see the link:https://h2database.com/html/features.html?highlight=url&search=url#database_url[official documentation]."
-msgstr "Para mais informações, consulte a  link:https://h2database.com/html/features.html?highlight=url&amp;search=url#database_url[documentação oficial]."
+msgid "For more information, see the link:https://h2database.com/html/features.html#database_url[official documentation]."
+msgstr ""
 
 #. type: Title ====
 #: _guides/datasource.adoc
@@ -1229,11 +1228,9 @@ msgstr ""
 msgid "`jdbc:mysql://localhost:3306/test`"
 msgstr "`jdbc:mysql://localhost:3306/test`"
 
-#. type: Plain text
 #: _guides/datasource.adoc
-#, fuzzy
-msgid "For more information, see the link:https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-reference.html[official documentation]."
-msgstr "Para mais informações, consulte a  link:https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-reference.html[documentação oficial]."
+msgid "For more information, see the link:https://dev.mysql.com/doc/connector-j/en/[official documentation]."
+msgstr ""
 
 #. type: Title =====
 #: _guides/datasource.adoc

@@ -237,7 +237,7 @@ msgstr ""
 
 #: _versions/main/guides/reactive-sql-clients.adoc
 msgid ""
-"Wondering why we need block until the latest query is completed?\n"
+"Wondering why we need to block until the latest query is completed?\n"
 "This code is part of a `@PostConstruct` method and Quarkus invokes it synchronously.\n"
 "As a consequence, returning prematurely could lead to serving requests while the database is not ready yet."
 msgstr ""
@@ -409,9 +409,8 @@ msgid ""
 "We will use https://jquery.com/[jQuery] to simplify interactions with the backend:"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/reactive-sql-clients.adoc
-msgid "In the Javascript code, we need a function to refresh the list of fruits when:"
+msgid "In the JavaScript code, we need a function to refresh the list of fruits when:"
 msgstr ""
 
 #. type: Plain text
