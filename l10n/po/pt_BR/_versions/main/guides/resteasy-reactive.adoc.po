@@ -1505,6 +1505,14 @@ msgstr ""
 msgid "Assume we have a POJO named `Person` which looks like so:"
 msgstr ""
 
+#: _versions/main/guides/resteasy-reactive.adoc
+msgid ""
+"The `io.quarkus.resteasy.reactive.jackson.SecureField.rolesAllowed` property supports xref:config-reference.adoc#property-expressions[property expressions]\n"
+"exactly in the same fashion the `jakarta.annotation.security.RolesAllowed` annotation does. For more information, please\n"
+"refer to the xref:security-authorize-web-endpoints-reference.adoc#standard-security-annotations[Standard security annotations]\n"
+"section of the Authorization of web endpoints guide."
+msgstr ""
+
 #. type: Plain text
 #: _versions/main/guides/resteasy-reactive.adoc
 msgid "A very simple Jakarta REST Resource that uses `Person` could be:"
@@ -1530,6 +1538,10 @@ msgstr ""
 msgid ""
 "No additional configuration needs to be applied for this secure serialization to take place. However, users can use the `@io.quarkus.resteasy.reactive.jackson.EnableSecureSerialization` and `@io.quarkus.resteasy.reactive.jackson.DisableSecureSerialization`\n"
 "annotation to opt in or out for specific Jakarta REST Resource classes or methods."
+msgstr ""
+
+#: _versions/main/guides/resteasy-reactive.adoc
+msgid "Configuration expressions set with the `SecureField.rolesAllowed` property are validated during application startup even when the `@io.quarkus.resteasy.reactive.jackson.DisableSecureSerialization` annotation is used."
 msgstr ""
 
 #. type: Title =====
@@ -2671,6 +2683,10 @@ msgstr ""
 #. type: Plain text
 #: _versions/main/guides/resteasy-reactive.adoc
 msgid "In the following example, Quarkus will exclude `RuntimeResource` at runtime if the application has `some.property` configured to `\"disable\"`."
+msgstr ""
+
+#: _versions/main/guides/resteasy-reactive.adoc
+msgid "This feature does not work when using native build."
 msgstr ""
 
 #. type: Title ==

@@ -649,7 +649,7 @@ msgid "To containerize your Quarkus application that use `@RunOnVirtualThread`, 
 msgstr ""
 
 #: _versions/main/guides/virtual-threads.adoc
-msgid "Make sure you use a base image supporting virtual threads. Here we use an image providing Java 21."
+msgid "Make sure you use a base image supporting virtual threads. Here we use an image providing Java 21. Quarkus picks an image providing Java 21+ automatically if you do not set one."
 msgstr ""
 
 #. type: Plain text

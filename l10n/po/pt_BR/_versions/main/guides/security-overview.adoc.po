@@ -190,15 +190,12 @@ msgstr ""
 msgid "Secrets engines"
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/security-overview.adoc
-msgid "Secrets engines are components that store, generate, or encrypt data."
+msgid "You can use secrets engines with Quarkus to store, generate, or encrypt data."
 msgstr ""
 
 #: _versions/main/guides/security-overview.adoc
-msgid ""
-"Quarkus provides comprehensive HashiCorp Vault support.\n"
-"For more information, see the link:{vault-guide}[Quarkus and HashiCorp Vault] documentation."
+msgid "Quarkus provides additional extensions in Quarkiverse for securely storing credentials, for example, link:{vault-guide}[Quarkus and HashiCorp Vault]."
 msgstr ""
 
 #. type: Title ==

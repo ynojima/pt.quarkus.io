@@ -477,17 +477,44 @@ msgstr ""
 
 #. type: Plain text
 #: _versions/main/guides/security-openid-connect-multitenancy.adoc
-msgid "xref:default-tenant-resolver[Default resolution]"
-msgstr ""
-
-#. type: Plain text
-#: _versions/main/guides/security-openid-connect-multitenancy.adoc
 msgid "xref:tenant-resolver[Resolve with `TenantResolver`]"
 msgstr ""
 
 #. type: Plain text
 #: _versions/main/guides/security-openid-connect-multitenancy.adoc
+msgid "xref:default-tenant-resolver[Default resolution]"
+msgstr ""
+
+#. type: Plain text
+#: _versions/main/guides/security-openid-connect-multitenancy.adoc
 msgid "xref:annotations-tenant-resolver[Resolve with annotations]"
+msgstr ""
+
+#: _versions/main/guides/security-openid-connect-multitenancy.adoc
+msgid ""
+"These tenant resolution options will be tried in turn, in the order they are listed, until the tenant id gets resolved.\n"
+"If the tenant id remains unresolved (`null`) in the end then the default (unnamed) tenant configuration will be selected."
+msgstr ""
+
+#. type: Title ===
+#: _versions/main/guides/security-openid-connect-multitenancy.adoc
+#, no-wrap
+msgid "Resolve with `TenantResolver`"
+msgstr ""
+
+#. type: Plain text
+#: _versions/main/guides/security-openid-connect-multitenancy.adoc
+msgid "The following `application.properties` example shows how you can resolve the tenant identifier of two tenants named `a` and `b` by using the `TenantResolver` method:"
+msgstr ""
+
+#. type: Plain text
+#: _versions/main/guides/security-openid-connect-multitenancy.adoc
+msgid "You can return the tenant ID of either `a` or `b` from `quarkus.oidc.TenantResolver`:"
+msgstr ""
+
+#. type: Plain text
+#: _versions/main/guides/security-openid-connect-multitenancy.adoc
+msgid "In this example, the value of the last request path segment is a tenant ID, but if required, you can implement a more complex tenant identifier resolution logic."
 msgstr ""
 
 #. type: Title ===
@@ -527,27 +554,6 @@ msgstr ""
 #. type: Plain text
 #: _versions/main/guides/security-openid-connect-multitenancy.adoc
 msgid "Default resolution can also work for Bearer token authentication but it might be less practical in this case because a tenant identifier will always need to be set as the last path segment value."
-msgstr ""
-
-#. type: Title ===
-#: _versions/main/guides/security-openid-connect-multitenancy.adoc
-#, no-wrap
-msgid "Resolve with `TenantResolver`"
-msgstr ""
-
-#. type: Plain text
-#: _versions/main/guides/security-openid-connect-multitenancy.adoc
-msgid "The following `application.properties` example shows how you can resolve the tenant identifier of two tenants named `a` and `b` by using the `TenantResolver` method:"
-msgstr ""
-
-#. type: Plain text
-#: _versions/main/guides/security-openid-connect-multitenancy.adoc
-msgid "You can return the tenant ID of either `a` or `b` from `quarkus.oidc.TenantResolver`:"
-msgstr ""
-
-#. type: Plain text
-#: _versions/main/guides/security-openid-connect-multitenancy.adoc
-msgid "In this example, the value of the last request path segment is a tenant ID, but if required, you can implement a more complex tenant identifier resolution logic."
 msgstr ""
 
 #. type: Title ===
@@ -598,6 +604,10 @@ msgstr ""
 #. type: Plain text
 #: _versions/main/guides/security-openid-connect-multitenancy.adoc
 msgid "The `OidcTenantConfig` returned from this method is the same used to parse the `oidc` namespace configuration from the `application.properties`. You can populate it using any of the settings supported by the `quarkus-oidc` extension."
+msgstr ""
+
+#: _versions/main/guides/security-openid-connect-multitenancy.adoc
+msgid "If the dynamic tenant resolver returns `null` then a xref:static-tenant-resolution[Static tenant configuration resolution] will be attempted next."
 msgstr ""
 
 #. type: Title ===

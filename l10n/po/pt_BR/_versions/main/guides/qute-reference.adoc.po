@@ -3609,9 +3609,19 @@ msgid "Global Variables"
 msgstr ""
 
 #: _versions/main/guides/qute-reference.adoc
-msgid ""
-"The `io.quarkus.qute.TemplateGlobal` annotation can be used to denote static fields and methods that supply _global variables_ which are accessible in any template.\n"
-"Internally, each global variable is added to the data map of any `TemplateInstance` via the `TemplateInstance#data(String, Object)` method."
+msgid "The `io.quarkus.qute.TemplateGlobal` annotation can be used to denote static fields and methods that supply _global variables_ which are accessible in any template."
+msgstr ""
+
+#: _versions/main/guides/qute-reference.adoc
+msgid "Global variables are:"
+msgstr ""
+
+#: _versions/main/guides/qute-reference.adoc
+msgid "added to the data map of any `TemplateInstance` during initialization,"
+msgstr ""
+
+#: _versions/main/guides/qute-reference.adoc
+msgid "accessible with the `global:` namespace."
 msgstr ""
 
 #. type: Block title
@@ -3641,9 +3651,8 @@ msgstr ""
 msgid "`currentUser` resolves to `Globals#user()`."
 msgstr ""
 
-#. type: Plain text
 #: _versions/main/guides/qute-reference.adoc
-msgid "`age` resolves to `Globals#age`."
+msgid "The `global:` namespace is used; `age` resolves to `Globals#age`."
 msgstr ""
 
 #. type: Plain text
@@ -3670,7 +3679,7 @@ msgstr ""
 
 #: _versions/main/guides/qute-reference.adoc
 msgid ""
-"Global variables may conflict with regular data objects.\n"
+"If not accessed via the `global:` namespace the global variables may conflict with regular data objects.\n"
 "xref:typesafe_templates[Type-safe templates] override the global variables automatically.\n"
 "For example, the following definition overrides the global variable supplied by the `Globals#user()` method:"
 msgstr ""
