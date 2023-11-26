@@ -1,0 +1,2099 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+
+    <channel>
+        <title>Quarkus</title>
+        <link>https://quarkus.io</link>
+        <description>Quarkus: Supersonic Subatomic Java</description>
+        <lastBuildDate>Sun, 26 Nov 2023 09:12:40 +0000</lastBuildDate>
+        
+        <item>
+            <title>SmallRye Stork Unwrapped: Exploring New Features and Enhancements</title>
+            <link>
+                https://quarkus.io/blog/stork-latest-news/
+            </link>
+            <description>
+                &lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Since its initial release in January 2022, Stork has undergone significant development, introducing new features that extended its capabilities and improved developer experience.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This blog post takes a deep dive into the evolution of SmallRye Stork beyond its initial release, providing a detailed exploration of its fresh additions.
+But first, let&amp;#8217;s describe briefly what Stork can do for you.
+SmallRye Stork is a client-side service discovery and selection framework.
+It provides out-of-the-box integrations with Kubernetes, Eureka, and Hashicorp Consul, as well as a set of selection strategies, including round-robin, power-of-two-choices and best response time.
+But the most noteworthy feature of Stork is its extensibility. You can create your own service selection strategy or plug in your own service discovery mechanism.
+If you don&amp;#8217;t know it yet, a good way to get started is to take a look at our &lt;a href=&quot;https://quarkus.io/guides/stork&quot;&gt;getting started guide&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Additionally, our documentation has also been enhanced, offering comprehensive guides for both seasoned users and those taking their first steps with Stork.
+To further support your exploration, there is &lt;a href=&quot;https://www.youtube.com/watch?v=fCNwxPDGt7Q&quot;&gt;a video&lt;/a&gt; and supplementary content that show Stork&amp;#8217;s capabilities in detail, don’t hesitate to check them out.
+Don&amp;#8217;t have much time? Don&amp;#8217;t worry, we have the &lt;a href=&quot;https://www.youtube.com/shorts/F4Gd1I1zfjs&quot;&gt;perfect video&lt;/a&gt; to understand Stork in less than 1 minute.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;With the latest added additions we highlight how Stork
+continues to reshape the client-side service discovery and selection landscape.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Let&amp;#8217;s now have a look at the most interesting additions added to Stork since its initial release.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;programmatic-service-definition&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#programmatic-service-definition&quot;&gt;&lt;/a&gt;Programmatic service definition&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Initially, you had to configure Stork in the application configuration. You needed to configure the service discovery and selection (optionally) for each &lt;em&gt;service&lt;/em&gt; you wanted to discover and select.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Stork, from the 1.2.0 version, proposes a programmatic API to allow users to define the service discovery and selection configuration through code rather
+than through declarative or external configuration files. This means that you can use the full expressive power of Java to explicitly specify new service
+definitions and do manual lookup and selection. This is particularly beneficial when the configuration requirements of an application are not known until runtime,
+and it provides the ability to adjust settings without restarting the application.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;When using the programmatic API of Stork, you can:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Retrieve the singleton &lt;code&gt;Stork&lt;/code&gt; instance. This instance is configured with the set of &lt;code&gt;Services&lt;/code&gt; it manages.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Register new service definition.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Retrieve the &lt;code&gt;Service&lt;/code&gt; you want to use. Each Service is associated with a name.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Retrieve the &lt;code&gt;ServiceInstance&lt;/code&gt;, which will provide the metadata to access the actual instance.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In the following code, we use Stork programmatic API to set up and configure services with different discovery methods and selection strategies:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-java hljs&quot; data-lang=&quot;java&quot;&gt;package examples;
+
+import io.smallrye.stork.Stork;
+import io.smallrye.stork.api.ServiceDefinition;
+import io.smallrye.stork.loadbalancer.random.RandomConfiguration;
+import io.smallrye.stork.servicediscovery.consul.ConsulRegistrarConfiguration;
+import io.smallrye.stork.servicediscovery.staticlist.StaticConfiguration;
+import io.smallrye.stork.servicediscovery.staticlist.StaticRegistrarConfiguration;
+
+public class DefinitionExample {
+
+    public static void example(Stork stork) {
+        String example = &quot;localhost:8080, localhost:8081&quot;;
+
+        // A service using a static list of locations as discovery
+        // As not set, it defaults to round-robin to select the instance.
+        stork.defineIfAbsent(&quot;my-service&quot;,
+                ServiceDefinition.of(new StaticConfiguration().withAddressList(example)));
+
+        // Another service using the random selection strategy, instead of round-robin
+        stork.defineIfAbsent(&quot;my-second-service&quot;,
+                ServiceDefinition.of(new StaticConfiguration().withAddressList(example),
+                        new RandomConfiguration()));
+
+        // Another service using the random selection strategy, instead of round-robin
+        // and a static service registrar
+        stork.defineIfAbsent(&quot;my-second-service&quot;,
+                ServiceDefinition.of(new StaticConfiguration().withAddressList(example),
+                        new RandomConfiguration(), new StaticRegistrarConfiguration()));
+    }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;It’s important to note that the choice between programmatic and declarative configuration often depends on the specific requirements and constraints of
+your application.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;service-discovery-and-selection-strategies-provided-as-cdi-beans&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#service-discovery-and-selection-strategies-provided-as-cdi-beans&quot;&gt;&lt;/a&gt;Service discovery and selection strategies provided as CDI beans.&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The second noticeable improvement is the integration with CDI.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Users may prefer using a framework that leverages CDI mechanism to easily manage and inject dependencies and have a more testable and maintainable code.
+Stork can now do that. Starting from the 2.0.1 release, users can use the service discovery and load balancer as beans.
+For that, it looks for CDI beans during the initialization in addition to the SPI providers.
+It is worth mentioning that this enhancement also contributes to improving the Quarkus experience.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;new-service-discovery-approaches-added&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#new-service-discovery-approaches-added&quot;&gt;&lt;/a&gt;New service discovery approaches added.&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;We are happy to announce a few added service discovery strategies using DNS and Knative.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;With the Knative service discovery, Smallrye Stork introduces seamless service discovery through its serverless infrastructure, even when there are no 'pod' running.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The Stork Knative service discovery implementation is very similar to the Kubernetes one.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Stork will ask for &lt;a href=&quot;https://knative.dev/docs/serving/reference/serving-api/#serving.knative.dev/v1.Service&quot;&gt;Knative services&lt;/a&gt; to the cluster instead of vanilla &lt;a href=&quot;https://kubernetes.io/docs/concepts/services-networking/service/#service-resource&quot;&gt;Kubernetes services&lt;/a&gt; used by the Kubernetes implementation.
+Again, to do so, Stork uses &lt;a href=&quot;https://github.com/fabric8io/kubernetes-client/blob/master/extensions/knative/client/src/main/java/io/fabric8/knative/client/KnativeClient.java&quot;&gt;Fabric 8 Knative Client&lt;/a&gt; which is just an extension of Fabric8 Kubernetes Client.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The DNS-based service discovery is also here to stay. When a service has registered one or more instances in a Domain Name System (DNS) server,
+Stork will be able to discover them by querying the DNS. This strategy is simple and widely used, so Stork could not fail to implement it.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;new-sticky-service-selection-strategy&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#new-sticky-service-selection-strategy&quot;&gt;&lt;/a&gt;New sticky service selection strategy&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The Stork load balancer family has been extended with a new one: the sticky service selection implementation.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The sticky service selection implemented by Stork refers to a strategy where a client &quot;sticks&quot; to a particular instance of a service until it fails,
+then it selects another one. It is also possible to configure a backoff period for specifying how long a failing service instance should be retried.
+This can be useful in scenarios where maintaining a consistent connection to the same instance is beneficial, such as when dealing with sessions or
+stateful applications.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;enhanced-service-instances-cache-expiration-policy&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#enhanced-service-instances-cache-expiration-policy&quot;&gt;&lt;/a&gt;Enhanced service instances cache expiration policy.&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Since almost the first release, Stork has provided in-memory caching of discovered instances by extending the &lt;code&gt;CachingServiceDiscovery&lt;/code&gt; class.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;As of version 1.3, this capability has been expanded to allow the retention of the cached service instances for a specified duration and the implementation of custom business logic for decision-making and data expiration.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This enhancement was driven by the specific requirements of Kubernetes service discovery as contacting the cluster too frequently can result in performance
+problems. So, out of the box, Stork Kubernetes service discovery now comes with a tailored cache expiration strategy to keep service instances until an event occurs.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If you would like to do so for your custom service discovery implementations, you need:
+- Extend the CachingServiceDiscovery as mentioned above.
+- Implement the &lt;code&gt;cache&lt;/code&gt; method where the expiration strategy is defined.
+- Invalidate the cache when the expiration condition evaluates to &lt;code&gt;true&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Look at the example bellow:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-java hljs&quot; data-lang=&quot;java&quot;&gt;package examples;
+
+import io.smallrye.mutiny.Uni;
+import io.smallrye.stork.api.ServiceInstance;
+import io.smallrye.stork.impl.CachingServiceDiscovery;
+import io.smallrye.stork.impl.DefaultServiceInstance;
+import io.smallrye.stork.utils.ServiceInstanceIds;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+public class CustomExpirationCachedAcmeServiceDiscovery extends CachingServiceDiscovery {
+
+    private final String host;
+    private final int port;
+
+    private AtomicBoolean invalidated = new AtomicBoolean();
+
+    public CustomExpirationCachedAcmeServiceDiscovery(CachedAcmeConfiguration configuration) {
+        super(configuration.getRefreshPeriod()); // (1)
+        this.host = configuration.getHost();
+        this.port = Integer.parseInt(configuration.getPort());
+    }
+
+    @Override
+    public Uni&amp;lt;List&amp;lt;ServiceInstance&amp;gt;&amp;gt; fetchNewServiceInstances(List&amp;lt;ServiceInstance&amp;gt; previousInstances) {
+        // Retrieve services...
+        DefaultServiceInstance instance =
+                new DefaultServiceInstance(ServiceInstanceIds.next(), host, port, false);
+        return Uni.createFrom().item(() -&amp;gt; Collections.singletonList(instance));
+    }
+
+    @Override
+    public Uni&amp;lt;List&amp;lt;ServiceInstance&amp;gt;&amp;gt; cache(Uni&amp;lt;List&amp;lt;ServiceInstance&amp;gt;&amp;gt; uni) {
+        return uni.memoize().until(() -&amp;gt; invalidated.get());
+    }
+
+    //command-based cache invalidation: user triggers the action to invalidate the cache.
+    public void invalidate() {
+        invalidated.set(true);
+    }
+
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;You can check the &lt;a href=&quot;https://github.com/smallrye/smallrye-stork/blob/main/service-discovery/kubernetes/src/main/java/io/smallrye/stork/servicediscovery/kubernetes/KubernetesServiceDiscovery.java&quot;&gt;Kubernetes Service Discovery code&lt;/a&gt; for further details about an event-based invalidation example.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;observability&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#observability&quot;&gt;&lt;/a&gt;Observability&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Observability refers to the ability to understand and gain insights into the internal workings and behaviors of a system through the analysis of its external outputs or observations. Stork observability support has been integrated in Quarkus 3.6.0 release (release planned for next week). This addition brings automated observability to the forefront of service discovery and selection providing a window into how Stork behaves in real-time. Now you can effortlessly monitor metrics such as service discovery and selection durations and error rates.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If you&amp;#8217;re leveraging Stork within your Quarkus application, now, you can easily check and analyze metrics such as service discovery and selection
+response times and errors directly in Prometheus. Check the &lt;a href=&quot;https://quarkus.io/version/main/guides/stork-reference#configure-stork-observability&quot;&gt;Stork reference guide&lt;/a&gt; for details.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In conclusion, all these advancements in Stork signify our commitment to enhancing your experience with service discovery and selection.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Stay tuned for more updates. Your feedback is invaluable to us so share it and contribute to making Stork even better.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+            </description>
+            <pubDate>Thu, 23 Nov 2023 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/stork-latest-news/
+            </guid>
+            
+            
+            
+            <author>Aurea Munoz (https://twitter.com/auritamh)</author>
+            
+        </item>
+        
+        <item>
+            <title>Quarkus 3.5.3 released - Maintenance release</title>
+            <link>
+                https://quarkus.io/blog/quarkus-3-5-3-released/
+            </link>
+            <description>
+                &lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Today, we released Quarkus 3.5.3, our third maintenance release for the 3.5 release train.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This release contains bugfixes and documentation improvements.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;It should be a safe upgrade for anyone already using 3.5.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;update&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#update&quot;&gt;&lt;/a&gt;Update&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;To update to Quarkus 3.5.3, we recommend updating to the latest version of the Quarkus CLI and run:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-bash hljs&quot; data-lang=&quot;bash&quot;&gt;quarkus update&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;To migrate from 3.4, please refer to &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.5&quot;&gt;our migration guide&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If you are not already using 3.x, please refer to the &lt;a href=&quot;https://quarkus.io/blog/quarkus-3-0-final-released/&quot;&gt;3.0 announcement&lt;/a&gt; for all the details.
+You can also refer to &lt;a href=&quot;https://quarkus.io/blog/quarkus-3-upgrade/&quot;&gt;this blog post&lt;/a&gt; for additional details.
+Once you upgraded to 3.0, also have a look at the &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.1&quot;&gt;3.1&lt;/a&gt;, &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.2&quot;&gt;3.2&lt;/a&gt;, &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.2&quot;&gt;3.3&lt;/a&gt;, and &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.4&quot;&gt;3.4&lt;/a&gt; migration guides.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;full-changelog&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#full-changelog&quot;&gt;&lt;/a&gt;Full changelog&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;You can get &lt;a href=&quot;https://github.com/quarkusio/quarkus/releases/tag/3.5.3&quot;&gt;the full changelog of 3.5.3 on GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;come-join-us&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#come-join-us&quot;&gt;&lt;/a&gt;Come Join Us&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;We value your feedback a lot so please report bugs, ask for improvements&amp;#8230;&amp;#8203; Let&amp;#8217;s build something great together!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If you are a Quarkus user or just curious, don&amp;#8217;t be shy and join our welcoming community:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;provide feedback on &lt;a href=&quot;https://github.com/quarkusio/quarkus/issues&quot;&gt;GitHub&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;craft some code and &lt;a href=&quot;https://github.com/quarkusio/quarkus/pulls&quot;&gt;push a PR&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;discuss with us on &lt;a href=&quot;https://quarkusio.zulipchat.com/&quot;&gt;Zulip&lt;/a&gt; and on the &lt;a href=&quot;https://groups.google.com/d/forum/quarkus-dev&quot;&gt;mailing list&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ask your questions on &lt;a href=&quot;https://stackoverflow.com/questions/tagged/quarkus&quot;&gt;Stack Overflow&lt;/a&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+            </description>
+            <pubDate>Tue, 21 Nov 2023 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/quarkus-3-5-3-released/
+            </guid>
+            
+            
+            
+            <author>Guillaume Smet (https://twitter.com/gsmet_)</author>
+            
+        </item>
+        
+        <item>
+            <title>Quarkus 3.2.9.Final released - Maintenance LTS release</title>
+            <link>
+                https://quarkus.io/blog/quarkus-3-2-9-final-released/
+            </link>
+            <description>
+                &lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Quarkus 3.2.9.Final, the ninth maintenance release of the 3.2 LTS release train has been released.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This release fixes the following regressions reported by the community:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/quarkusio/quarkus/issues/36992&quot;&gt;Gradle plugin: quarkus.container-image.push=true not working in 3.2.8&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/quarkusio/quarkus/issues/37045&quot;&gt;Regression with ForwardedParser setting an empty host header&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;And the following critical bug fixes:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/quarkusio/quarkus/pull/37077&quot;&gt;Handle duplicated context in the CacheResultInterceptor&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/quarkusio/quarkus/issues/20092&quot;&gt;GraphQL authenticated subscription&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;It should be a safe upgrade for anyone already using a 3.2 release.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If you are not already using a 3.2 release, please refer to &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.2&quot;&gt;our migration guide&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;full-changelog&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#full-changelog&quot;&gt;&lt;/a&gt;Full changelog&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;You can get &lt;a href=&quot;https://github.com/quarkusio/quarkus/releases/tag/3.2.9.Final&quot;&gt;the full changelog of 3.2.9.Final on GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;come-join-us&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#come-join-us&quot;&gt;&lt;/a&gt;Come Join Us&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;We value your feedback a lot so please report bugs, ask for improvements&amp;#8230;&amp;#8203; Let&amp;#8217;s build something great together!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If you are a Quarkus user or just curious, don&amp;#8217;t be shy and join our welcoming community:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;provide feedback on &lt;a href=&quot;https://github.com/quarkusio/quarkus/issues&quot;&gt;GitHub&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;craft some code and &lt;a href=&quot;https://github.com/quarkusio/quarkus/pulls&quot;&gt;push a PR&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;discuss with us on &lt;a href=&quot;https://quarkusio.zulipchat.com/&quot;&gt;Zulip&lt;/a&gt; and on the &lt;a href=&quot;https://groups.google.com/d/forum/quarkus-dev&quot;&gt;mailing list&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ask your questions on &lt;a href=&quot;https://stackoverflow.com/questions/tagged/quarkus&quot;&gt;Stack Overflow&lt;/a&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+            </description>
+            <pubDate>Mon, 20 Nov 2023 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/quarkus-3-2-9-final-released/
+            </guid>
+            
+            
+            
+            <author>Alexey Loubyansky (https://twitter.com/aloubyansky)</author>
+            
+        </item>
+        
+        <item>
+            <title>Quarkus 3.5.2 released - Maintenance release</title>
+            <link>
+                https://quarkus.io/blog/quarkus-3-5-2-released/
+            </link>
+            <description>
+                &lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Today, we released Quarkus 3.5.2, our second maintenance release for the 3.5 release train.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This release contains bugfixes and documentation improvements.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;It should be a safe upgrade for anyone already using 3.5.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;update&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#update&quot;&gt;&lt;/a&gt;Update&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;To update to Quarkus 3.5.2, we recommend updating to the latest version of the Quarkus CLI and run:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-bash hljs&quot; data-lang=&quot;bash&quot;&gt;quarkus update&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;To migrate from 3.4, please refer to &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.5&quot;&gt;our migration guide&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If you are not already using 3.x, please refer to the &lt;a href=&quot;https://quarkus.io/blog/quarkus-3-0-final-released/&quot;&gt;3.0 announcement&lt;/a&gt; for all the details.
+You can also refer to &lt;a href=&quot;https://quarkus.io/blog/quarkus-3-upgrade/&quot;&gt;this blog post&lt;/a&gt; for additional details.
+Once you upgraded to 3.0, also have a look at the &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.1&quot;&gt;3.1&lt;/a&gt;, &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.2&quot;&gt;3.2&lt;/a&gt;, &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.2&quot;&gt;3.3&lt;/a&gt;, and &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.4&quot;&gt;3.4&lt;/a&gt; migration guides.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;full-changelog&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#full-changelog&quot;&gt;&lt;/a&gt;Full changelog&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;You can get &lt;a href=&quot;https://github.com/quarkusio/quarkus/releases/tag/3.5.2&quot;&gt;the full changelog of 3.5.2 on GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;come-join-us&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#come-join-us&quot;&gt;&lt;/a&gt;Come Join Us&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;We value your feedback a lot so please report bugs, ask for improvements&amp;#8230;&amp;#8203; Let&amp;#8217;s build something great together!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If you are a Quarkus user or just curious, don&amp;#8217;t be shy and join our welcoming community:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;provide feedback on &lt;a href=&quot;https://github.com/quarkusio/quarkus/issues&quot;&gt;GitHub&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;craft some code and &lt;a href=&quot;https://github.com/quarkusio/quarkus/pulls&quot;&gt;push a PR&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;discuss with us on &lt;a href=&quot;https://quarkusio.zulipchat.com/&quot;&gt;Zulip&lt;/a&gt; and on the &lt;a href=&quot;https://groups.google.com/d/forum/quarkus-dev&quot;&gt;mailing list&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ask your questions on &lt;a href=&quot;https://stackoverflow.com/questions/tagged/quarkus&quot;&gt;Stack Overflow&lt;/a&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+            </description>
+            <pubDate>Thu, 16 Nov 2023 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/quarkus-3-5-2-released/
+            </guid>
+            
+            
+            
+            <author>Guillaume Smet (https://twitter.com/gsmet_)</author>
+            
+        </item>
+        
+        <item>
+            <title>When Quarkus meets LangChain4j</title>
+            <link>
+                https://quarkus.io/blog/quarkus-meets-langchain4j/
+            </link>
+            <description>
+                &lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Large language models (LLMs) are reshaping the world of software, altering the way we interact with users and develop business logic.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Popularized by &lt;a href=&quot;https://openai.com/&quot;&gt;OpenAI&lt;/a&gt;'s &lt;a href=&quot;https://chat.openai.com/&quot;&gt;ChatGPT&lt;/a&gt;, LLMs are now available in many flavors and sizes. The &lt;a href=&quot;https://huggingface.co/models&quot;&gt;Hugging-Face&lt;/a&gt; platform references hundreds of them, and major tech companies like Facebook, Google, Microsoft, Amazon and IBM are also providing their own models.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;LLMs are not a new concept. They have been around for a while, but they were not as powerful or as accessible they became when OpenAI made ChatGPT API&amp;#8217;s publically available. Since then the Quarkus team have been thinking about what it would mean to integrate LLMs in the Quarkus ecosystem. The talk &lt;a href=&quot;https://www.youtube.com/watch?app=desktop&amp;amp;v=BD1MSLbs9KE&quot;&gt;Java Meets AI&lt;/a&gt; from Lize Raes at Devoxx 2023 has been a great source of inspiration.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Since, the Quarkus team, in collaboration with Dmytro Liubarskyi and the LangChain4j team, has been working on an extension to integrate LLMs in Quarkus applications. This extension is based on the &lt;a href=&quot;https://github.com/langchain4j&quot;&gt;LangChain4j library&lt;/a&gt;, which provides a common API to interact with LLMs. The LangChain4j project is a Java re-implementation of the famous &lt;a href=&quot;https://www.langchain.com/&quot;&gt;langchain&lt;/a&gt; library.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In this blog post, we will see how to use the just released &lt;a href=&quot;https://docs.quarkiverse.io/quarkus-langchain4j/dev/index.html&quot;&gt;quarkus-langchain4j&lt;/a&gt; 0.1 extension to integrate LLMs in Quarkus applications. This extension is an exploration to understand how LLMs can be used in Quarkus applications.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;We recorded a live Fireside chat on this extension. You can watch it here, the blog continues &lt;a href=&quot;#overview&quot;&gt;below&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;videoblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;iframe width=&quot;640&quot; height=&quot;360&quot; src=&quot;https://www.youtube.com/embed/mYw9ySwmK34?rel=0&quot; frameborder=&quot;0&quot; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;overview&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#overview&quot;&gt;&lt;/a&gt;Overview&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;First, let&amp;#8217;s have a look at the big picture. When integrating an LLM into a Quarkus application, you need to describe what you want the AI to do. Unlike traditional code, you are going to explain the behavior of the AI using natural language. Of course, there are a few techniques to tame the AI, but we will explore that later.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Strictly relying on the LLM&amp;#8217;s knowledge might not be enough. Thus, the Quarkus LangChain4j extension provides two mechanisms to extend AI knowledge:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;Tools&lt;/em&gt; - a tool lets the LLM execute actions in your application. For instance, you can use a tool to send an email, call a REST endpoint, or execute a database query. The LLM decides when to use the tool, the method parameters, and what to do with the result.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;Document stores&lt;/em&gt; - LLMs are not good at remembering things. In addition, their context has a size limit. Thus, the extension provides a way to store and retrieve information from document stores. Before calling the LLM, the extension can ask for relevant documents in a document store and attach them to the context. The LLM can then use this data to make a decision. For instance, you can load spreadsheet data, reports, or data from a database.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The following diagram illustrates the interactions between the LLM, the tools, and the document stores:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;imageblock right text-center&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;img src=&quot;/assets/images/posts/llms/llms-big-picture.png&quot; alt=&quot;Quarkus LLM integration - the big picture&quot;&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;show-me-some-code&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#show-me-some-code&quot;&gt;&lt;/a&gt;Show me some code!&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Alright, enough &quot;bla bla&quot;, let&amp;#8217;s see some code! We are going to use Open AI GPT-3.5 (be careful that it&amp;#8217;s not the state-of-the-art model, but it&amp;#8217;s good enough for this demo), give it some product reviews, and ask the LLM to classify them between positive and negative reviews. The full code is available in the &lt;a href=&quot;https://github.com/quarkiverse/quarkus-langchain4j/tree/main/samples/review-triage&quot;&gt;quarkus-langchain4j repository&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;First, we need the &lt;code&gt;quarkus-langchain4j-openai&lt;/code&gt; extension:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-xml hljs&quot; data-lang=&quot;xml&quot;&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;io.quarkiverse.langchain4j&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;quarkus-langchain4j-openai&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;0.1.0&amp;lt;/version&amp;gt; &amp;lt;!-- Update to use the latest version --&amp;gt;
+&amp;lt;/dependency&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Once we have the extension, it&amp;#8217;s time to tell the LLM what we want to do. The Quarkus LangChain4J extension provides a declarative way to describe LLM interactions. The idea is the same as the Quarkus REST client. We model the interaction using an interface annotated with &lt;code&gt;@RegisterAiService&lt;/code&gt;:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-java hljs&quot; data-lang=&quot;java&quot;&gt;@RegisterAiService
+public interface TriageService {
+    // methods.
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The rest of the application would be able to use the LLM by injecting the &lt;code&gt;TriageService&lt;/code&gt; interface and calling the methods.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Speaking about methods, that&amp;#8217;s where the magic happens. You will describe what you want the LLM to do using natural language. First, you start with &lt;code&gt;@SystemMessage&lt;/code&gt; to define the role and scope. Then, you can use &lt;code&gt;@UserMessage&lt;/code&gt; to describe the task.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-java hljs&quot; data-lang=&quot;java&quot;&gt;@RegisterAiService
+public interface TriageService {
+    @SystemMessage(&quot;&quot;&quot;
+        You are working for a bank, processing reviews about
+        financial products. Triage reviews into positive and
+        negative ones, responding with a JSON document.
+        &quot;&quot;&quot;
+    )
+    @UserMessage(&quot;&quot;&quot;
+        Your task is to process the review delimited by ---.
+        Apply sentiment analysis to the review to determine
+        if it is positive or negative, considering various languages.
+
+        For example:
+        - `I love your bank, you are the best!` is a 'POSITIVE' review
+        - `J'adore votre banque` is a 'POSITIVE' review
+        - `I hate your bank, you are the worst!` is a 'NEGATIVE' review
+
+        Respond with a JSON document containing:
+        - the 'evaluation' key set to 'POSITIVE' if the review is
+        positive, 'NEGATIVE' otherwise
+        - the 'message' key set to a message thanking or apologizing
+        to the customer. These messages must be polite and match the
+        review's language.
+
+        ---
+        {review}
+        ---
+    &quot;&quot;&quot;)
+    TriagedReview triage(String review);
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Voilà! That&amp;#8217;s all you need to do to describe the interaction with the LLM. The instructions follow a set of principles to shape the LLM response. Learn more about these techniques in &lt;a href=&quot;https://docs.quarkiverse.io/quarkus-langchain4j/dev/prompt-engineering.html&quot;&gt;the dedicated prompt engineering page&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Now, to call the LLM from the application code, just inject the &lt;code&gt;TriageService&lt;/code&gt; and call the &lt;code&gt;triage&lt;/code&gt; method:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-java hljs&quot; data-lang=&quot;java&quot;&gt;@Path(&quot;/review&quot;)
+public class ReviewResource {
+
+    @Inject
+    TriageService triage;
+
+    record Review(String review) {
+      // User text
+    }
+
+    @POST
+    public TriagedReview triage(Review review) {
+        return triage.triage(review.review());
+    }
+
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;That&amp;#8217;s it! The LLM is now integrated into the application. The &lt;code&gt;TriageService&lt;/code&gt; interface is used as an ambassador to call the LLM. This declarative approach has many advantages:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Testability - you can easily mock the LLM by providing a fake implementation of the interface.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Observability - you can use the Quarkus metrics annotation to monitor the LLM methods.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Resilience - you can use the Quarkus fault-tolerance annotations to handle failures, timeouts, and other transient issues.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;tools-and-document-loader&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#tools-and-document-loader&quot;&gt;&lt;/a&gt;Tools and Document loader&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The previous example is a bit simplistic. In the real world, you will need to extend the LLM knowledge with tools and document stores. The &lt;code&gt;@RegisterAiService&lt;/code&gt; annotation lets you define the tools and document stores to use.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;tools&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#tools&quot;&gt;&lt;/a&gt;Tools&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Tools are methods that the LLM can invoke.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;To declare a tool, just use the &lt;code&gt;@Tool&lt;/code&gt; annotation on a &lt;em&gt;bean&lt;/em&gt; method:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-java hljs&quot; data-lang=&quot;java&quot;&gt;@ApplicationScoped
+public class CustomerRepository implements PanacheRepository&amp;lt;Customer&amp;gt; {
+
+    @Tool(&quot;get the customer name for the given customerId&quot;)
+    public String getCustomerName(long id) {
+        return find(&quot;id&quot;, id).firstResult().name;
+    }
+
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In this example, we are using the Panache repository pattern to access the database. We have a specific method annotated with &lt;code&gt;@Tool&lt;/code&gt; to retrieve the customer name. When the LLM needs to get the customer name, it instructs Quarkus to call this method and receives the result.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Obviously, it&amp;#8217;s not a good idea to expose every operation to the LLM. So, in addition to &lt;code&gt;@Tool&lt;/code&gt;, you need to list the set of tools you allow the LLM to invoke in the &lt;code&gt;@RegisterAiService&lt;/code&gt; annotation:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-java hljs&quot; data-lang=&quot;java&quot;&gt;@RegisterAiService(
+    tools = { TransactionRepository.class, CustomerRepository.class },
+    chatMemoryProviderSupplier = RegisterAiService.BeanChatMemoryProviderSupplier.class
+)
+public interface FraudDetectionAi {
+   // ...
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The &lt;code&gt;chatMemoryProviderSupplier&lt;/code&gt; configuration may raise questions. When using tools, a sequence of messages unfolds behind the scenes. It becomes necessary to configure the AI service&amp;#8217;s memory to adeptly track these interactions. The &lt;code&gt;chatMemoryProviderSupplier&lt;/code&gt; allows configuring how the memory is handled. The value &lt;code&gt;BeanChatMemoryProviderSupplier.class&lt;/code&gt; instructs Quarkus to look for a &lt;code&gt;ChatMemoryProvider&lt;/code&gt; bean, like the following:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-java hljs&quot; data-lang=&quot;java&quot;&gt;@RequestScoped
+public class ChatMemoryBean implements ChatMemoryProvider {
+
+    Map&amp;lt;Object, ChatMemory&amp;gt; memories = new ConcurrentHashMap&amp;lt;&amp;gt;();
+
+    @Override
+    public ChatMemory get(Object memoryId) {
+        return memories.computeIfAbsent(memoryId,
+            id -&amp;gt; MessageWindowChatMemory.builder()
+                    .maxMessages(20)
+                    .id(memoryId)
+                    .build()
+            );
+    }
+
+    @PreDestroy
+    public void close() {
+        memories.clear();
+    }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;At the moment, only the OpenAI models support tools.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;document-stores&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#document-stores&quot;&gt;&lt;/a&gt;Document stores&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Document stores are a way to extend the LLM knowledge with your own data. This approach - called Retrieval Augmented Generation (&lt;em&gt;RAG&lt;/em&gt;) - requires two processes:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;dlist&quot;&gt;
+&lt;dl&gt;
+&lt;dt class=&quot;hdlist1&quot;&gt;The ingestion process&lt;/dt&gt;
+&lt;dd&gt;
+&lt;p&gt;you ingest documents into a document store. The documents are not stored as-is, but an embedding is computed. This embedding is a vector representation of the document.&lt;/p&gt;
+&lt;/dd&gt;
+&lt;dt class=&quot;hdlist1&quot;&gt;The RAG process&lt;/dt&gt;
+&lt;dd&gt;
+&lt;p&gt;in the Quarkus application, you need to declare the document store and the embedding to use. Thus, before calling the LLM, it retrieves the relevant documents from the store (that&amp;#8217;s where the vector representation is useful) and attaches them to the LLM context (which essentially means adding the retrieved information from the document to the user message).&lt;/p&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The Quarkus LangChain4j extension provides facilities for both processes.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The following code shows how to ingest a document into a Redis document store:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-java hljs&quot; data-lang=&quot;java&quot;&gt;@ApplicationScoped
+public class IngestorExample {
+
+    /**
+     * The embedding store (the database).
+     * The bean is provided by the quarkus-langchain4j-redis extension.
+     */
+    @Inject
+    RedisEmbeddingStore store;
+
+    /**
+     * The embedding model (how the vector of a document is computed).
+     * The bean is provided by the LLM (like openai) extension.
+     */
+    @Inject
+    EmbeddingModel embeddingModel;
+
+    public void ingest(List&amp;lt;Document&amp;gt; documents) {
+        var ingestor = EmbeddingStoreIngestor.builder()
+                .embeddingStore(store)
+                .embeddingModel(embeddingModel)
+                .documentSplitter(recursive(500, 0))
+                .build();
+        ingestor.ingest(documents);
+    }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Then, generally, in another application, you can use the populated document store to extend the LLM knowledge. First, create a bean implementing the &lt;code&gt;Retriever&amp;lt;TextSegment&amp;gt;&lt;/code&gt; interface:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-java hljs&quot; data-lang=&quot;java&quot;&gt;@ApplicationScoped
+public class RetrieverExample implements Retriever&amp;lt;TextSegment&amp;gt; {
+
+    private final EmbeddingStoreRetriever retriever;
+
+    RetrieverExample(RedisEmbeddingStore store, EmbeddingModel model) {
+        retriever = EmbeddingStoreRetriever.from(store, model, 20);
+    }
+
+    @Override
+    public List&amp;lt;TextSegment&amp;gt; findRelevant(String s) {
+        return retriever.findRelevant(s);
+    }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Then, add the document store and the retriever to the &lt;code&gt;@RegisterAiService&lt;/code&gt; annotation:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-java hljs&quot; data-lang=&quot;java&quot;&gt;@RegisterAiService(
+    retrieverSupplier = RegisterAiService.BeanRetrieverSupplier.class
+)
+public interface MyAiService {
+// ...
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;admonitionblock tip&quot;&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td class=&quot;icon&quot;&gt;
+&lt;i class=&quot;fa icon-tip&quot; title=&quot;Tip&quot;&gt;&lt;/i&gt;
+&lt;/td&gt;
+&lt;td class=&quot;content&quot;&gt;
+&lt;code&gt;RegisterAiService.BeanRetrieverSupplier.class&lt;/code&gt; is a special value looking for the &lt;code&gt;Retriever&lt;/code&gt; bean in the Quarkus application.
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;final-notes&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#final-notes&quot;&gt;&lt;/a&gt;Final notes&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This post presented the Quarkus LangChain4j extension. This is the first version of the extension, and we continue exploring and experimenting with approaches to integrate LLMs into Quarkus applications. We are looking for feedback and ideas to improve these integrations. We are working on removing some rough angles, and exploring other ways to integrate LLMs and to bring developer joy when integrating with LLMs.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This extension would not have been possible without the fantastic work from Dmytro Liubarskyi on the LangChain4j library. Our collaboration has allowed us to provide a Quarkus-friendly approach to integrate the library (including native compilation support) and shape a new way to integrate LLMs in Quarkus applications. The current design was tailored to enable Quarkus applications to use LLM easily. You can basically hook up any of your &lt;em&gt;beans&lt;/em&gt; as tools or ingest data into a store. In addition, any of your bean can now interact with an LLM.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;We are looking forward to continuing this collaboration and to see what you will build with this extension.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+            </description>
+            <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/quarkus-meets-langchain4j/
+            </guid>
+            
+            
+            
+            <author>Clement Escoffier (https://twitter.com/clementplop)</author>
+            
+        </item>
+        
+        <item>
+            <title>Quarkus Newsletter #38 - November</title>
+            <link>
+                https://quarkus.io/blog/quarkus-newsletter-38/
+            </link>
+            <description>
+                &lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In the world of software development, innovation often arrives in the form of powerful tools that transform the way we build applications - enter Quarkus, a development platform that&amp;#8217;s reshaping the Java landscape. Learn more about it in &quot;Get started with Quarkus and JPAStreamer &quot; by Julia Gustafsson. The Red Hat build of Quarkus 3.2 features an enriched UI for Java development and the new Pact tool for contract-based testing. Learn more about it in &quot;Red Hat Quarkus Java stack spruces up the dev UI&quot; by Paul Krill. &quot;Demystifying Quarkus Extension Development: Jandex vs. AdditionalBeanBuildItem&quot; by Ivelin Yanev explains the differences between these approaches, offering insights into their roles, applications, and the intricate interplay between them. Gain a clear understanding of how to wield these tools effectively in your Quarkus extensions. Learn how to use Scaffold to quickly modify your code and redeploy it in your Kubernetes cluster with &quot;Skaffold with Quarkus and Kubernetes&quot; by Ronald Koster. Check out the results of the analysis to attribute the size increase to specific changes in Mandrel’s code base with &quot;Exploring why native executables produced with Mandrel 23.0 are bigger than those produced with Mandrel 22.3&quot; by Foivos Zakkak.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;You will also see the latest Quarkus Insights episodes, top tweets and upcoming Quarkus attended events.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Check out &lt;a href=&quot;https://quarkus.io/newsletter/38/&quot;&gt;Newsletter #38: November&lt;/a&gt;!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Want to get newsletters in your inbox? &lt;a href=&quot;https://quarkus.io/newsletter&quot;&gt;Sign up for the newsletter&lt;/a&gt; using the on page form.&lt;/p&gt;
+&lt;/div&gt;
+            </description>
+            <pubDate>Tue, 14 Nov 2023 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/quarkus-newsletter-38/
+            </guid>
+            
+            
+            
+            <author>James Cobb (https://twitter.com/insectengine)</author>
+            
+        </item>
+        
+        <item>
+            <title>Quarkus 3.5.1 released - Maintenance release</title>
+            <link>
+                https://quarkus.io/blog/quarkus-3-5-1-released/
+            </link>
+            <description>
+                &lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Today, we released Quarkus 3.5.1, our first maintenance release for the 3.5 release train.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Among other bugfixes, this release fixes the following CVE:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://nvd.nist.gov/vuln/detail/CVE-2023-5720&quot;&gt;CVE-2023-5720&lt;/a&gt; Build environment information disclosure via Quarkus Gradle plugin&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;It should be a safe upgrade for anyone already using 3.5.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;update&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#update&quot;&gt;&lt;/a&gt;Update&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;To update to Quarkus 3.5.1, we recommend updating to the latest version of the Quarkus CLI and run:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;highlightjs highlight&quot;&gt;&lt;code class=&quot;language-bash hljs&quot; data-lang=&quot;bash&quot;&gt;quarkus update&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;To migrate from 3.4, please refer to &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.5&quot;&gt;our migration guide&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If you are not already using 3.x, please refer to the &lt;a href=&quot;https://quarkus.io/blog/quarkus-3-0-final-released/&quot;&gt;3.0 announcement&lt;/a&gt; for all the details.
+You can also refer to &lt;a href=&quot;https://quarkus.io/blog/quarkus-3-upgrade/&quot;&gt;this blog post&lt;/a&gt; for additional details.
+Once you upgraded to 3.0, also have a look at the &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.1&quot;&gt;3.1&lt;/a&gt;, &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.2&quot;&gt;3.2&lt;/a&gt;, &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.2&quot;&gt;3.3&lt;/a&gt;, and &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.4&quot;&gt;3.4&lt;/a&gt; migration guides.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;full-changelog&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#full-changelog&quot;&gt;&lt;/a&gt;Full changelog&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;You can get &lt;a href=&quot;https://github.com/quarkusio/quarkus/releases/tag/3.5.1&quot;&gt;the full changelog of 3.5.1 on GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;come-join-us&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#come-join-us&quot;&gt;&lt;/a&gt;Come Join Us&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;We value your feedback a lot so please report bugs, ask for improvements&amp;#8230;&amp;#8203; Let&amp;#8217;s build something great together!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If you are a Quarkus user or just curious, don&amp;#8217;t be shy and join our welcoming community:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;provide feedback on &lt;a href=&quot;https://github.com/quarkusio/quarkus/issues&quot;&gt;GitHub&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;craft some code and &lt;a href=&quot;https://github.com/quarkusio/quarkus/pulls&quot;&gt;push a PR&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;discuss with us on &lt;a href=&quot;https://quarkusio.zulipchat.com/&quot;&gt;Zulip&lt;/a&gt; and on the &lt;a href=&quot;https://groups.google.com/d/forum/quarkus-dev&quot;&gt;mailing list&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ask your questions on &lt;a href=&quot;https://stackoverflow.com/questions/tagged/quarkus&quot;&gt;Stack Overflow&lt;/a&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+            </description>
+            <pubDate>Thu, 09 Nov 2023 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/quarkus-3-5-1-released/
+            </guid>
+            
+            
+            
+            <author>Guillaume Smet (https://twitter.com/gsmet_)</author>
+            
+        </item>
+        
+        <item>
+            <title>Quarkus 3.2.8.Final released - Maintenance release</title>
+            <link>
+                https://quarkus.io/blog/quarkus-3-2-8-final-released/
+            </link>
+            <description>
+                &lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Today, we released Quarkus 3.2.8.Final, the eighth maintenance release of the 3.2 LTS release train.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This release fixes the following CVE:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https://nvd.nist.gov/vuln/detail/CVE-2023-5720&quot;&gt;CVE-2023-5720&lt;/a&gt; build env information disclosure via gradle plugin&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;It should be a safe upgrade for anyone already using a 3.2 release.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If you are not already using a 3.2 release, please refer to &lt;a href=&quot;https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.2&quot;&gt;our migration guide&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;full-changelog&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#full-changelog&quot;&gt;&lt;/a&gt;Full changelog&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;You can get &lt;a href=&quot;https://github.com/quarkusio/quarkus/releases/tag/3.2.8.Final&quot;&gt;the full changelog of 3.2.8.Final on GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;come-join-us&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#come-join-us&quot;&gt;&lt;/a&gt;Come Join Us&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;We value your feedback a lot so please report bugs, ask for improvements&amp;#8230;&amp;#8203; Let&amp;#8217;s build something great together!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;If you are a Quarkus user or just curious, don&amp;#8217;t be shy and join our welcoming community:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;provide feedback on &lt;a href=&quot;https://github.com/quarkusio/quarkus/issues&quot;&gt;GitHub&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;craft some code and &lt;a href=&quot;https://github.com/quarkusio/quarkus/pulls&quot;&gt;push a PR&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;discuss with us on &lt;a href=&quot;https://quarkusio.zulipchat.com/&quot;&gt;Zulip&lt;/a&gt; and on the &lt;a href=&quot;https://groups.google.com/d/forum/quarkus-dev&quot;&gt;mailing list&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ask your questions on &lt;a href=&quot;https://stackoverflow.com/questions/tagged/quarkus&quot;&gt;Stack Overflow&lt;/a&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+            </description>
+            <pubDate>Wed, 08 Nov 2023 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/quarkus-3-2-8-final-released/
+            </guid>
+            
+            
+            
+            <author>Alexey Loubyansky (https://twitter.com/aloubyansky)</author>
+            
+        </item>
+        
+        <item>
+            <title>Exploring why native executables produced with Mandrel 23.1 are bigger than those produced with Mandrel 23.0</title>
+            <link>
+                https://quarkus.io/blog/mandrel-23-1-image-size-increase/
+            </link>
+            <description>
+                &lt;p&gt;This article is a follow-up to &lt;a href=&quot;../mandrel-23-0-image-size-increase/&quot;&gt;Exploring why native executables produced with Mandrel 23.0 are bigger than with Mandrel 22.3&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Starting with Quarkus 3.5 the default Mandrel version was updated from 23.0 to 23.1.&lt;/p&gt;
+
+&lt;p&gt;This update brought a number of bugfixes as well as new features like:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Preview of &lt;a href=&quot;https://github.com/oracle/graal/blob/master/docs/reference-manual/native-image/ForeignInterface.md&quot;&gt;Foreign Function &amp;amp; Memory API downcalls&lt;/a&gt; (part of “Project Panama”, &lt;a href=&quot;https://openjdk.org/jeps/442&quot;&gt;JEP 442&lt;/a&gt;) on AMD64. Must be enabled with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--enable-preview&lt;/code&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;New option &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-H:±IndirectBranchTargetMarker&lt;/code&gt; to mark indirect branch targets on AMD64 with an endbranch instruction. This is a prerequisite for future Intel CET support.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Throw &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MissingReflectionRegistrationError&lt;/code&gt; when attempting to create a proxy class without having it registered at build-time, instead of a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;VMError&lt;/code&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Support for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-XX:+HeapDumpOnOutOfMemoryError&lt;/code&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;New &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--parallelism&lt;/code&gt; option to control how many threads are used by the build process.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Simulation of class initializer: Class initializer of classes that are not marked for initialization at image build time are simulated at image build time to avoid executing them at image run time.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;and &lt;a href=&quot;https://github.com/oracle/graal/blob/master/substratevm/CHANGELOG.md#graalvm-for-jdk-21-internal-version-2310&quot;&gt;more&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;However, it also brought an unwanted side effect.
+The native executables produced with Mandrel 23.1 are bigger than the ones produced with Mandrel 23.0.
+To better understand why that happens we perform a thorough analysis to attribute the size increase to specific changes in Mandrel’s code base.&lt;/p&gt;
+
+&lt;h2 id=&quot;tldr&quot;&gt;TL;DR&lt;/h2&gt;
+
+&lt;p&gt;According to our analysis the binary size increase is attributed to two distinct changes, both of which are necessary for getting more accurate profiles when using the &lt;a href=&quot;https://github.com/async-profiler/async-profiler&quot;&gt;async-profiler&lt;/a&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/oracle/graal/pull/7003&quot;&gt;&lt;strong&gt;Add support for profiling of topmost frame&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/oracle/graal/pull/6763&quot;&gt;&lt;strong&gt;ProfilingSampler does not need local variable values&lt;/strong&gt;&lt;/a&gt; (specifically &lt;a href=&quot;https://github.com/oracle/graal/commit/d747c30c7691012c39989a8597fd850c68b740ad&quot;&gt;the commit “Always store bci in frame info”&lt;/a&gt;)&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;better-understanding-what-is-different-between-the-generated-native-executables&quot;&gt;Better understanding what is different between the generated native executables&lt;/h2&gt;
+
+&lt;p&gt;To perform the analysis we use the &lt;a href=&quot;https://github.com/quarkus-qe/quarkus-startstop&quot;&gt;Quarkus startstop test&lt;/a&gt; (specifically commit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;a8bae846881607e376c7c8a96116b6b50ee50b70&lt;/code&gt;) which generates, starts, tests, and stops small Quarkus applications and measures various time-related metrics (e.g. time-to-first-OK-request) and memory usage.
+We get the test with:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git clone https://github.com/quarkus-qe/quarkus-startstop
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;quarkus-startstop
+git checkout a8bae846881607e376c7c8a96116b6b50ee50b70
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;and build it with:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mvn clean package &lt;span class=&quot;nt&quot;&gt;-Pnative&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.version&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;3.5.0&lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.native.builder-image&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-17
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;changing the builder image tag to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jdk-20&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jdk-21&lt;/code&gt; for building with Mandrel 23.0 (based on JDK 20) and Mandrel 23.1 (based on JDK 21) respectively.&lt;/p&gt;
+
+&lt;p&gt;The reason we also use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jdk-20&lt;/code&gt; although deprecated is to see the effects of the base JDK when using the same code base (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jdk-17&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jdk-20&lt;/code&gt; are based on the same Mandrel source code but are built using a different base JDK version).&lt;/p&gt;
+
+&lt;p&gt;Looking at the build output (generated by Quarkus in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;target/my-app-native-image-sources/my-app-build-output-stats.json&lt;/code&gt;) the main differences between the three builds are in the following metrics:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Mandrel version&lt;/th&gt;
+      &lt;th&gt;23.0.2.1 (jdk-17)&lt;/th&gt;
+      &lt;th&gt;23.0.1.2 (jdk-20)&lt;/th&gt;
+      &lt;th&gt;23.1.1.0 (jdk-21)&lt;/th&gt;
+      &lt;th&gt;Increase jdk-17 to jdk-20 %&lt;/th&gt;
+      &lt;th&gt;Increase jdk-20 to jdk-21 %&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Image Heap Size&lt;/td&gt;
+      &lt;td&gt;29790208&lt;/td&gt;
+      &lt;td&gt;30982144&lt;/td&gt;
+      &lt;td&gt;33546240&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;8.3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Objects count&lt;/td&gt;
+      &lt;td&gt;351565&lt;/td&gt;
+      &lt;td&gt;353273&lt;/td&gt;
+      &lt;td&gt;356059&lt;/td&gt;
+      &lt;td&gt;0.5&lt;/td&gt;
+      &lt;td&gt;0.8&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Resources Size&lt;/td&gt;
+      &lt;td&gt;169205&lt;/td&gt;
+      &lt;td&gt;174761&lt;/td&gt;
+      &lt;td&gt;175392&lt;/td&gt;
+      &lt;td&gt;3.3&lt;/td&gt;
+      &lt;td&gt;0.36&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Resources Count&lt;/td&gt;
+      &lt;td&gt;28&lt;/td&gt;
+      &lt;td&gt;28&lt;/td&gt;
+      &lt;td&gt;79&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;182&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Total Image Size&lt;/td&gt;
+      &lt;td&gt;60006728&lt;/td&gt;
+      &lt;td&gt;61734352&lt;/td&gt;
+      &lt;td&gt;64224536&lt;/td&gt;
+      &lt;td&gt;2.88&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Which indicates that the base JDK plays significant role in the image size increase, leaving the question open on whether the further increase in the generated binary size between &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jdk-20&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jdk-21&lt;/code&gt; is due to the JDK difference or due to changes in Mandrel itself.&lt;/p&gt;
+
+&lt;p&gt;It is also interesting that despite the resource count increase between Mandrel 23.0 (jdk-20) and Mandrel 23.1 (jdk-21) the resource size is not affected that much.
+As a result, we focus our analysis on the Image Heap Size which increases disproportionally to the objects count between the different Mandrel versions indicating that either some objects became bigger, or the few new objects being added to the heap are quite big.&lt;/p&gt;
+
+&lt;h3 id=&quot;dashboards&quot;&gt;Dashboards&lt;/h3&gt;
+
+&lt;p&gt;GraalVM and Mandrel provide the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-H:+DashboardAll&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-H:+DashboardJson&lt;/code&gt; flags that can be used to generate dashboards that contain more information about the generated native executable.
+The resulting dashboard contains a number of metrics and looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;points-to&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;type-flows&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;code-breakdown&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;code-size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;io.smallrye.mutiny.CompositeException.getFirstOrFail(Throwable[]) Throwable&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;575&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;heap-breakdown&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;heap-size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Lio/vertx/core/impl/VerticleManager$$Lambda$bf09d38f5d19578a0d041ffd0a524c1cbe1843df;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;24&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;count&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Using the aforementioned flags we generate dashboards using both Mandrel 23.1 and 23.0 and compare the results.&lt;/p&gt;
+
+&lt;p&gt;To generate the dashboards using Mandrel 23.0 we use the following command:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mvn package &lt;span class=&quot;nt&quot;&gt;-Pnative&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.version&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;3.5.0 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.native.builder-image&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-20 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.native.additional-build-args&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-H&lt;/span&gt;:+DashboardAll,-H:+DashboardJson,-H:DashboardDump&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;path/to/23.0.dashboard.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Similarly to generate the dashboards using Mandrel 23.1 we use the following command:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mvn package &lt;span class=&quot;nt&quot;&gt;-Pnative&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.version&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;3.5.0 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.native.builder-image&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.native.additional-build-args&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-H&lt;/span&gt;:+DashboardAll,-H:+DashboardJson,-H:DashboardDump&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;path/to/23.1.dashboard.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Note: Make sure to change &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path/to/&lt;/code&gt; to the path where you would like the dashboard json files to be stored, each file is about 370MB big.&lt;/p&gt;
+
+&lt;h3 id=&quot;analyzing-and-visualizing-the-data&quot;&gt;Analyzing and visualizing the data&lt;/h3&gt;
+
+&lt;p&gt;To process the data from the dashboards we used a Jupyter notebook, like we do in this article.
+To grab the notebook follow &lt;a href=&quot;/assets/examples/posts/mandrel-23-1-image-size-increase/quarkus-size-23-0-23-1.ipynb&quot;&gt;this link&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;loading-the-data-from-the-json-files&quot;&gt;Loading the data from the json files&lt;/h4&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;json&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pandas&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# load data from JSON file
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'23.0.dashboard.json'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'r'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;data23_0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;load&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'23.1.dashboard.json'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'r'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;data23_1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;load&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# create dataframes from json data
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df23_0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DataFrame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;df23_1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DataFrame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data23_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;is-the-heap-image-bigger-because-the-objects-in-the-heap-are-bigger-than-before-or-because-we-store-more-objects-in-it&quot;&gt;Is the heap image bigger because the objects in the heap are bigger than before or because we store more objects in it?&lt;/h2&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Get heap-size lists from dataframes
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;heap_size_23_0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'heap-breakdown'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'heap-size'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;heap_size_23_1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df23_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'heap-breakdown'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'heap-size'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# create dataframes from heap_size lists
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;heap_df23_0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DataFrame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;heap_size_23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;columns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'size-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'count'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'count-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;heap_df23_1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DataFrame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;heap_size_23_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;columns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'size-23.1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'count'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'count-23.1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;whats-the-average-object-size&quot;&gt;What’s the average object size?&lt;/h3&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Average object size for Mandrel 23.0: {:.2f}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;heap_df23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()))&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Average object size for Mandrel 23.1: {:.2f}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;heap_df23_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-23.1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Average object size for Mandrel 23.0: 8137.46
+Average object size for Mandrel 23.1: 8880.06
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;whats-the-minimum-and-maximum-object-size-in-each-case&quot;&gt;What’s the minimum and maximum object size in each case?&lt;/h3&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Minimum object size for Mandrel 23.0:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;heap_df23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Minimum object size for Mandrel 23.1:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;heap_df23_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-23.1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;max_size_23_0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;heap_df23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;max_size_23_1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;heap_df23_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-23.1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Maximum object size for Mandrel 23.0:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;max_size_23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Maximum object size for Mandrel 23.1:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;max_size_23_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Minimum object size for Mandrel 23.0: 16
+Minimum object size for Mandrel 23.1: 16
+Maximum object size for Mandrel 23.0: 14149496
+Maximum object size for Mandrel 23.1: 16933168
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We observe that the maximum object size when compiling with Mandrel 23.1 is about 2.6MB bigger than the maximum object size when compiling with Mandrel 23.0.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;max_size_diff&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_size_23_1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;max_size_23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Max size difference in MB: {:.2f}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_size_diff&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Max size difference in MB: 2.65
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;which-objects-are-the-bigger-ones&quot;&gt;Which objects are the bigger ones?&lt;/h3&gt;
+
+&lt;p&gt;As a result, next we search to see which objects are the bigger ones in both cases and what is their corresponding size in the other Mandrel version.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;max_size_23_0_rows&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;heap_df23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;heap_df23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;max_size_23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Objects with size equal to max_size_23_0 in heap_size_23_0:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_size_23_0_rows&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Objects with size equal to max_size_23_0 in heap_size_23_0:
+     name  size-23.0  count-23.0
+1340   [B   14149496      110914
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;max_size_23_1_rows&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;heap_df23_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;heap_df23_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-23.1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;max_size_23_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Objects with size equal to max_size_23_1 in heap_size_23_1:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_size_23_1_rows&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Objects with size equal to max_size_23_1 in heap_size_23_1:
+     name  size-23.1  count-23.1
+1351   [B   16933168      111454
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Not surprisingly, we detect that the object type with the maximum size in both cases is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[B&lt;/code&gt;, i.e. byte arrays.&lt;/p&gt;
+
+&lt;h3 id=&quot;more-byte-arrays-of-similar-size-or-a-few-larger-ones&quot;&gt;More byte arrays of similar size or a few larger ones?&lt;/h3&gt;
+
+&lt;p&gt;Next we look at the average size of the byte arrays in both versions to see if the increase can be attributed to more similarly sized arrays being added to the image or just a few larger ones.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;max_size_23_0_row&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;max_size_23_0_rows&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;max_size_23_1_row&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;max_size_23_1_rows&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Average size of byte arrays in Mandrel 23.0: {:.2f}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_size_23_0_row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_size_23_0_row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'count-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Average size of byte arrays in Mandrel 23.1: {:.2f}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_size_23_1_row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-23.1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_size_23_1_row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'count-23.1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Average size of byte arrays in Mandrel 23.0: 127.57
+Average size of byte arrays in Mandrel 23.1: 151.93
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We observe that the average byte array size when building with Mandrel 23.1 is bigger, which is an indication that some larger byte arrays are being added to the image heap.&lt;/p&gt;
+
+&lt;h2 id=&quot;generating-heap-dumps-and-analyzing-them-in-java-mission-control-jmc&quot;&gt;Generating heap dumps and analyzing them in Java Mission Control (JMC)&lt;/h2&gt;
+
+&lt;p&gt;Since the dashboards don’t provide more info we rebuild our test with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-Dquarkus.native.additional-build-args=-R:+DumpHeapAndExit&lt;/code&gt; using both Mandrel versions.
+This options instructs the generated native images to create a heap dump and exit.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mvn package &lt;span class=&quot;nt&quot;&gt;-Pnative&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.version&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;3.5.0 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.native.builder-image&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-20 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.native.additional-build-args&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-R&lt;/span&gt;:+DumpHeapAndExit
+...
+./target/quarkus-runner
+Heap dump created at &lt;span class=&quot;s1&quot;&gt;'quarkus-runner.hprof'&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;mv &lt;/span&gt;quarkus-runner.hprof quarkus-runner-23-0.hprof
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We do the same with Mandrel 23.1 using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jdk-21&lt;/code&gt; tag and open the dumps in Java Mission Control (JMC).
+To install JMC one may use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sdk install jmc&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;After starting JMC we navigate to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;File-&amp;gt;Open&lt;/code&gt; and select the heap dumps we just generated.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/posts/mandrel-23-1-image-size-increase/jmc-file-open.png&quot; alt=&quot;JMC File -&amp;gt; Open&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Once the heap dumps are loaded we click on the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;byte[]&lt;/code&gt; class to filter the results and focus on the objects of this type.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/posts/mandrel-23-1-image-size-increase/jmc-focus-byte-23-1.png&quot; alt=&quot;JMC focus on byte[] for 23.1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;At this point on the right side of the window we can see the referrers sorted by the total size of the byte arrays they reference.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/posts/mandrel-23-1-image-size-increase/jmc-focus-byte-23-1-2.png&quot; alt=&quot;JMC focus on byte[] for 23.1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We observe that the majority of the byte arrays when using Mandrel 23.1 is referenced by &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;com.oracle.svm.core.code.ImageCodeInfo.codeInfoEncodings&lt;/code&gt; (12%) and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;com.oracle.svm.core.code.ImageCodeInfo.frameInfoEncodings&lt;/code&gt; (11%), while when using Mandrerl 23.0 the corresponding percentages are 12% and 6%.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/posts/mandrel-23-1-image-size-increase/jmc-focus-byte-23-0-2.png&quot; alt=&quot;JMC focus on byte[] for 23.0&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We also observe that when using Mandrel 23.1 the size of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;com.oracle.svm.core.code.ImageCodeInfo.frameInfoEncodings&lt;/code&gt; is ~2.5MB larger than the corresponding size when using Mandrel 23.0.&lt;/p&gt;
+
+&lt;h2 id=&quot;attributing-binary-size-increase-to-specific-code-changes&quot;&gt;Attributing Binary Size Increase to Specific Code Changes&lt;/h2&gt;
+
+&lt;p&gt;As a result, we focus our search on changes in Mandrel’s source code that could affect the frame info encodings using:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git log &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt; substratevm/src/com.oracle.svm.core/src/com/oracle/svm/core/code/FrameInfo&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;this way we detected the following two pull requests:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/oracle/graal/pull/7003&quot;&gt;&lt;strong&gt;Add support for profiling of topmost frame&lt;/strong&gt;&lt;/a&gt; which adds ~1MB of data to the image.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/oracle/graal/pull/6763&quot;&gt;&lt;strong&gt;ProfilingSampler does not need local variable values&lt;/strong&gt;&lt;/a&gt; (specifically &lt;a href=&quot;https://github.com/oracle/graal/commit/d747c30c7691012c39989a8597fd850c68b740ad&quot;&gt;the commit “Always store bci in frame info”&lt;/a&gt;) which adds ~1.7MB of data to the image.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Both of these changes are necessary to improve the accuracy of the &lt;a href=&quot;https://github.com/async-profiler/async-profiler&quot;&gt;async-profiler&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Similarly to when Quarkus upgraded from 22.3 to 23.0, we observe an increase in the size of the generated native executables when going from 23.0 to 23.1.
+Once more the changes resulting to that increase in the binary size appear to be well justified.
+As &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;native-image&lt;/code&gt; becomes more mature and feature rich it seems inevitable to avoid increasing the size of the generated binaries.&lt;/p&gt;
+
+&lt;p&gt;If you think that this kind of info should only be included when the user opts-in, please provide your feedback in &lt;a href=&quot;https://github.com/oracle/graal/discussions/7707&quot;&gt;this discussion&lt;/a&gt;.&lt;/p&gt;
+
+            </description>
+            <pubDate>Wed, 08 Nov 2023 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/mandrel-23-1-image-size-increase/
+            </guid>
+            
+            
+            
+            <author>Foivos Zakkak (https://twitter.com/zakkak)</author>
+            
+        </item>
+        
+        <item>
+            <title>Exploring why native executables produced with Mandrel 23.0 are bigger than those produced with Mandrel 22.3</title>
+            <link>
+                https://quarkus.io/blog/mandrel-23-0-image-size-increase/
+            </link>
+            <description>
+                &lt;p&gt;Starting with Quarkus 3.2 the default Mandrel version was updated from 22.3 to 23.0.&lt;/p&gt;
+
+&lt;p&gt;This update brought a number of bugfixes as well as new features like:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Better support for profiling and debugging using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;perf&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gdb&lt;/code&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Finer control over the monitoring features included in the native executable.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Support for more JFR events.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;However, it also brought an unwanted side effect.
+The native executables produced with Mandrel 23.0 are bigger than the ones produced with Mandrel 22.3.
+To better understand why that happens we perform a thorough analysis to attribute the size increase to specific changes in Mandrel’s code base.&lt;/p&gt;
+
+&lt;h2 id=&quot;tldr&quot;&gt;TL;DR&lt;/h2&gt;
+
+&lt;p&gt;According to our analysis the binary size increase is attributed to three distinct changes, all of which are well justified:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/oracle/graal/pull/5156&quot;&gt;Skipping constant folding of reflection methods with side effects&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/oracle/graal/pull/5330&quot;&gt;Reducing the number of stores that are executed by the serial GC write barriers to improve performance by reducing the number of cache misses&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/oracle/graal/commit/4de58f1b3c484213951622c03d74f3435a20c4ef#diff-991a434bbfc9a6af5514e4609380d5fbfe7618585d5b1b3f11fa2a7431ca7ab0L1388-R1388&quot;&gt;Enabling code alignment to compensate for the performance penalty of Intel’s jump conditional code erratum&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;better-understanding-what-is-different-between-the-generated-native-executables&quot;&gt;Better understanding what is different between the generated native executables&lt;/h2&gt;
+
+&lt;p&gt;The first step in our analysis is to understand where the binary size increase comes from.
+Usually such an increase is attributed to one of the following:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;More code being generated, due to more code becoming reachable.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;More code being generated, due to more aggressive inlining.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;More data being stored in the image heap, due to more objects being reachable.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;More data being stored in the image heap, due to more types being registered for reflection thus requiring more code metadata to be stored.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;To perform the analysis we use the &lt;a href=&quot;https://github.com/quarkus-qe/quarkus-startstop&quot;&gt;Quarkus startstop test&lt;/a&gt; (specifically commit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;a8bae846881607e376c7c8a96116b6b50ee50b70&lt;/code&gt;) which generates, starts, tests, and stops small Quarkus applications and measures various time-related metrics (e.g. time-to-first-OK-request) and memory usage.
+We get the test with:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git clone https://github.com/quarkus-qe/quarkus-startstop
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;quarkus-startstop
+git checkout a8bae846881607e376c7c8a96116b6b50ee50b70
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;and build it with:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mvn clean package &lt;span class=&quot;nt&quot;&gt;-Pnative&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.version&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;3.2.6.Final&lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.native.builder-image&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-17
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;changing the builder image tag to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;22.3-java17&lt;/code&gt; for building with Mandrel 22.3.&lt;/p&gt;
+
+&lt;p&gt;Looking at the build output (generated by Quarkus in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;target/my-app-native-image-sources/my-app-build-output-stats.json&lt;/code&gt;) the main differences between the two builds are in the following metrics:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Mandrel version&lt;/th&gt;
+      &lt;th&gt;22.3.3.1&lt;/th&gt;
+      &lt;th&gt;23.0.1.2&lt;/th&gt;
+      &lt;th&gt;Increase %&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Image Heap Size&lt;/td&gt;
+      &lt;td&gt;28807168&lt;/td&gt;
+      &lt;td&gt;29499392&lt;/td&gt;
+      &lt;td&gt;2.4&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Image Code Area&lt;/td&gt;
+      &lt;td&gt;27680208&lt;/td&gt;
+      &lt;td&gt;29625424&lt;/td&gt;
+      &lt;td&gt;7&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Total Image Size&lt;/td&gt;
+      &lt;td&gt;56826648&lt;/td&gt;
+      &lt;td&gt;59467728&lt;/td&gt;
+      &lt;td&gt;4.6&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Classes registered for reflection&lt;/td&gt;
+      &lt;td&gt;645&lt;/td&gt;
+      &lt;td&gt;4317&lt;/td&gt;
+      &lt;td&gt;570&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Hinting that any of the reasons 1-4 mentioned above is possible.&lt;/p&gt;
+
+&lt;h3 id=&quot;dashboards&quot;&gt;Dashboards&lt;/h3&gt;
+
+&lt;p&gt;GraalVM and Mandrel provide the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-H:+DashboardAll&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-H:+DashboardJson&lt;/code&gt; flags that can be used to generate dashboards that contain more information about the generated native executable.
+The resulting dashboard contains a number of metrics and looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;points-to&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;type-flows&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;code-breakdown&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;code-size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;io.smallrye.mutiny.CompositeException.getFirstOrFail(Throwable[]) Throwable&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;575&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;heap-breakdown&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;heap-size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Lio/vertx/core/impl/VerticleManager$$Lambda$bf09d38f5d19578a0d041ffd0a524c1cbe1843df;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;24&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;count&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Using the aforementioned flags we generate dashboards using both Mandrel 22.3 and 23.0 and compare the results.&lt;/p&gt;
+
+&lt;p&gt;To generate the dashboards using Mandrel 23.0 we use the following command:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mvn package &lt;span class=&quot;nt&quot;&gt;-Pnative&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.version&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;3.2.6.Final &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.native.builder-image&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-17 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.native.additional-build-args&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-H&lt;/span&gt;:+DashboardAll,-H:+DashboardJson,-H:DashboardDump&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;path/to/23.0.dashboard.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Similarly to generate the dashboards using Mandrel 22.3 we use the following command:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mvn package &lt;span class=&quot;nt&quot;&gt;-Pnative&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.version&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;3.2.6.Final &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.native.builder-image&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.native.additional-build-args&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-H&lt;/span&gt;:+DashboardAll,-H:+DashboardJson,-H:DashboardDump&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;path/to/22.3.dashboard.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Note: Make sure to change &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path/to/&lt;/code&gt; to the path where you would like the dashboard json files to be stored, each file is about 370MB big.&lt;/p&gt;
+
+&lt;h3 id=&quot;analyzing-and-visualizing-the-data&quot;&gt;Analyzing and visualizing the data&lt;/h3&gt;
+
+&lt;p&gt;To process the data from the dashboards we used a Jupyter notebook, like we did to create this article.
+To grab the notebook follow &lt;a href=&quot;/assets/examples/posts/mandrel-23-0-image-size-increase/quarkus-size-22-3-23-0.ipynb&quot;&gt;this link&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;For those willing to use a spreadsheet instead, a CSV file can be created to facilitate the analysis in a spreadsheet.
+E.g. using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jq&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jq &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'([&quot;Name&quot;, &quot;22.3 size&quot;, &quot;23.0 size&quot;], (map(.&quot;code-breakdown&quot;.&quot;code-size&quot;) | flatten | group_by(.name) | map({name: .[0].name, size22: .[0].size, size23: .[1].size})[] | [.name, .size22, .size23])) | @csv'&lt;/span&gt; 22.3.dashboard.json 23.0.dashboard.json &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; analysis.csv
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;loading-the-data-from-the-json-files&quot;&gt;Loading the data from the json files&lt;/h4&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;json&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pandas&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# load data from JSON file
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'22.3.dashboard.json'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'r'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;data22_3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;load&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'23.0.dashboard.json'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'r'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;data23_0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;load&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# create dataframes from json data
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df22_3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DataFrame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data22_3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;df23_0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DataFrame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;key-observations&quot;&gt;Key Observations&lt;/h2&gt;
+
+&lt;p&gt;The key questions we want to answer using the aforementioned data are:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Is the code area bigger due to more methods being compiled?&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Is the code area bigger due to more code being generated per method?&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Is the heap image bigger because we store more objects in it?&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Is the heap image bigger because we store more metadata?&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;code-area-size-increase&quot;&gt;Code Area Size Increase&lt;/h3&gt;
+
+&lt;p&gt;We first answer the code area related questions.&lt;/p&gt;
+
+&lt;h4 id=&quot;is-the-code-area-bigger-due-to-more-methods-being-compiled&quot;&gt;Is the code area bigger due to more methods being compiled?&lt;/h4&gt;
+
+&lt;p&gt;To answer this question we get the two lists of the compiled methods and compare their sizes:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Get code-size lists from dataframes
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;code_size_22_3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df22_3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'code-breakdown'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'code-size'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;code_size_23_0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'code-breakdown'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'code-size'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Compiled methods with 22_3:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;code_size_22_3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Compiled methods with 23_0:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;code_size_23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Compiled methods with 22_3: 46298
+Compiled methods with 23_0: 46299
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The results indicate that the answer is no.
+In both cases the number of compiled methods is the same (off by 1).
+As a result the code size increase is not coming from more methods becoming reachable and compiled.&lt;/p&gt;
+
+&lt;h4 id=&quot;is-the-code-area-bigger-due-to-more-code-being-generated-per-method&quot;&gt;Is the code area bigger due to more code being generated per method?&lt;/h4&gt;
+
+&lt;p&gt;To answer this question we calculate the percentage difference between the compiled methods:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;matplotlib.pyplot&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# create dataframes from code_size lists
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;code_df22_3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DataFrame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;code_size_22_3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;columns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'size-22.3'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;code_df23_0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DataFrame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;code_size_23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;columns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'size-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# merge dataframes
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merged_df&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;code_df22_3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code_df23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;how&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'outer'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fillna&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# create column with size increase as percentage skipping entries with 0 size
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;percentage_increase&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-22.3'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-22.3'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt; 
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-22.3'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; 
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;merged_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-increase'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;merged_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;percentage_increase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We count the number of methods, the number of those that didn’t change size, the number of those that their size increased, and the number of those that their size decreased:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;total_compiled_methods&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merged_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Total number of compiled methods: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;total_compiled_methods&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;zero_increase_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merged_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-increase'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;zero_increase_percent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zero_increase_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;total_compiled_methods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Number of methods that their compiled size remains the same: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zero_increase_count&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; (&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zero_increase_percent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;%)&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;positive_increase_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merged_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-increase'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;positive_increase_percent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;positive_increase_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;total_compiled_methods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Number of methods that their compiled size increased: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;positive_increase_count&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; (&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;positive_increase_percent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;%)&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;negative_increase_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merged_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-increase'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;negative_increase_percent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;negative_increase_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;total_compiled_methods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Number of methods that their compiled size decreased: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;negative_increase_count&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; (&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;negative_increase_percent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;%)&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Total number of compiled methods: 48476
+Number of methods that their compiled size remains the same: 13947 (28.77%)
+Number of methods that their compiled size increased: 33351 (68.80%)
+Number of methods that their compiled size decreased: 1178 (2.43%)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The results indicate that 68.8% of the compiled methods are bigger when compiled by 23.0 in comparison to when they are compiled by 22.3.
+But how much bigger?
+To answer this we print a histogram of the size increase:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# plot histogram
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merged_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-increase'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bins&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;auto&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xlabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Percentage difference'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ylabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Frequency'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Histogram of percentage difference in code size (full range)'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/posts/mandrel-23-0-image-size-increase/index_9_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We observe that due to a large number of methods retaining the same size and due to some outliers the histogram is hard to read.
+So we remove the methods with no size changes and limit our focus in the range [-5, 25]:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# create column with size increase as percentage skipping entries with 0 size
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zero_filter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-increase'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-increase'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;merged_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-increase'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;merged_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zero_filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# drop rows with None values
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merged_df&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;merged_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dropna&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# plot histogram
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merged_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-increase'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bins&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;auto&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xlim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;25&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xlabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Percentage difference'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ylabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Frequency'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Histogram of percentage difference in code size in the range [-5%, 25%] excluding 0%'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# show the plot
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/posts/mandrel-23-0-image-size-increase/index_11_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This plot shows that the majority of the affected methods get a code size increase between 0 and 10 %, which is inline with the overall size increase we observe in the code area.&lt;/p&gt;
+
+&lt;h5 id=&quot;why&quot;&gt;Why?&lt;/h5&gt;
+
+&lt;p&gt;To see why the same methods get compiled to larger machine code when using Mandrel 23.0 we first inspected how many methods are getting inlined in each case.
+To do so, we build the native executables with debug info generation enabled using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-Dquarkus.native.debug.enabled=true&lt;/code&gt; parameter.
+To make sure that inline DIEs are included when building with Mandrel 22.3 we also pass the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-Dquarkus.native.additional-build-args=-H:-OmitInlinedMethodDebugLineInfo&lt;/code&gt; option, e.g.:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mvn clean package &lt;span class=&quot;nt&quot;&gt;-Pnative&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.version&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;3.2.6.Final&lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.native.builder-image&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-17&lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.native.debug.enabled&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;-Dquarkus&lt;/span&gt;.native.additional-build-args&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-H&lt;/span&gt;:-OmitInlinedMethodDebugLineInfo
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After the image is built we count the number of &lt;em&gt;inlined&lt;/em&gt; Debug Info Entries (DIEs) using the following command:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;readelf &lt;span class=&quot;nt&quot;&gt;--debug-dump&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;info quarkus-runner | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;DW_TAG_inlined_subroutine&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;wc&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The results are shown in the table below:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Mandrel version&lt;/th&gt;
+      &lt;th&gt;22.3&lt;/th&gt;
+      &lt;th&gt;23.0&lt;/th&gt;
+      &lt;th&gt;Increase %&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Inlined methods&lt;/td&gt;
+      &lt;td&gt;2798414&lt;/td&gt;
+      &lt;td&gt;2817686&lt;/td&gt;
+      &lt;td&gt;0.69 %&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;While they indicate a slight increase in the number of inlined methods between Mandrel 22.3 and 23.0, the increase is so small that it doesn’t align with the overall code size increase.&lt;/p&gt;
+
+&lt;p&gt;As a next step, we hand-picked a number of methods with different code sizes in the generated native executables and inspected their disassembled code (using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gdb&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;For example inspecting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;InstrumentedUnpooledUnsafeNoCleanerDirectByteBuf.allocateDirect(int)&lt;/code&gt; from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;io.netty.buffer.UnpooledByteBufAllocator&lt;/code&gt; using:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-gdb&quot;&gt;(gdb) x/20i 'io.netty.buffer.UnpooledByteBufAllocator$InstrumentedUnpooledUnsafeNoCleanerDirectByteBuf::allocateDirect(int)'
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;we see that the one extra byte comes from an additional &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nop&lt;/code&gt; between two calls.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Mandrel 22.3&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-asm&quot;&gt;sub    $0x18,%rsp
+cmp    0x8(%r15),%rsp
+jbe    0x96ad8f
+mov    %rdi,0x8(%rsp)
+mov    %esi,%edi
+mov    %esi,0x14(%rsp)
+call   0xb7e870
+nop
+call   0x756e10
+nop
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Mandrel 23.0&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-asm&quot;&gt;sub    $0x18,%rsp
+cmp    0x8(%r15),%rsp
+jbe    0x96ad8f
+mov    %rdi,0x8(%rsp)
+mov    %esi,%edi
+mov    %esi,0x14(%rsp)
+call   0xb7e870
+nop
+nop                     // &amp;lt;==== extra nop
+call   0x756e10
+nop
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We observed this pattern in multiple methods which is an indication of some code alignment change.
+However, there were also methods with increased compiled code size without having an increased number of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nop&lt;/code&gt;s, hinting that the code size increase is not caused by a single change as we confirm in &lt;a href=&quot;#attributing-binary-size-increase-to-specific-code-changes&quot;&gt;Attributing Binary Size Increase to Specific Code Changes&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;image-heap-size-increase&quot;&gt;Image Heap Size Increase&lt;/h3&gt;
+
+&lt;p&gt;Upon initial inspection, it was noted that there was an increase of approximately 650KB in the image heap size.
+As a result next we opted to answer whether:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;The heap image is bigger because we store more objects in it?&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The heap image is bigger because we store more metadata?&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;is-the-heap-image-bigger-because-we-store-more-objects-in-it&quot;&gt;Is the heap image bigger because we store more objects in it?&lt;/h4&gt;
+
+&lt;p&gt;Using the dashboard data we first checked whether the number of objects in the image heap is different between the two versions:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Get heap-size lists from dataframes
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;heap_size_22_3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df22_3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'heap-breakdown'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'heap-size'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;heap_size_23_0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'heap-breakdown'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'heap-size'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# create dataframes from heap_size lists
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;heap_df22_3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DataFrame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;heap_size_22_3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;columns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'size-22.3'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'count'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'count-22.3'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;heap_df23_0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DataFrame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;heap_size_23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;columns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'size-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'count'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'count-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Number of objects in image heap with 22.3: &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;heap_df22_3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'count-22.3'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Number of objects in image heap with 23.0: &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;heap_df23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'count-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Number of objects in image heap with 22.3:  340870
+Number of objects in image heap with 23.0:  348063
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We observe that the image generated with 22.3 has ~7000 (or roughly 2%) more objects in the image heap.
+We then check to see if these additional objects are from different types being instantiated:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Types in image heap with 22.3:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;heap_size_22_3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Types in image heap with 23.0:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;heap_size_23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Types in image heap with 22.3: 3681
+Types in image heap with 23.0: 3679
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The results indicate that the number of types in the image heap remain about the same, hinting that 23.0 instantiates more objects of the same types in the image heap.
+To see which types are those seeing the larger, in terms of heap size, increase in the image heap we run:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# merge dataframes
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merged_heap_df&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;heap_df22_3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;heap_df23_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;how&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'outer'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fillna&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;merged_heap_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'count-diff'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;merged_heap_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'count-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;merged_heap_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'count-22.3'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;merged_heap_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-diff'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;merged_heap_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-23.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;merged_heap_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-22.3'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# get top 10 types with the biggest difference in occupied heap size
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merged_heap_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sort_values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;by&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'size-diff'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ascending&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;head&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'count-diff'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'size-diff'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div&gt;
+&lt;style scoped=&quot;&quot;&gt;
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+&lt;/style&gt;
+&lt;table border=&quot;1&quot; class=&quot;dataframe&quot;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&quot;text-align: right;&quot;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;name&lt;/th&gt;
+      &lt;th&gt;count-diff&lt;/th&gt;
+      &lt;th&gt;size-diff&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1340&lt;/th&gt;
+      &lt;td&gt;[B&lt;/td&gt;
+      &lt;td&gt;2042.0&lt;/td&gt;
+      &lt;td&gt;894704.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;2384&lt;/th&gt;
+      &lt;td&gt;Ljava/lang/invoke/DirectMethodHandle;&lt;/td&gt;
+      &lt;td&gt;1293.0&lt;/td&gt;
+      &lt;td&gt;71920.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;2901&lt;/th&gt;
+      &lt;td&gt;Ljava/lang/String;&lt;/td&gt;
+      &lt;td&gt;2032.0&lt;/td&gt;
+      &lt;td&gt;65024.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;3684&lt;/th&gt;
+      &lt;td&gt;Ljdk/internal/module/ServicesCatalog$ServicePr...&lt;/td&gt;
+      &lt;td&gt;1058.0&lt;/td&gt;
+      &lt;td&gt;42320.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;2582&lt;/th&gt;
+      &lt;td&gt;[Ljava/lang/Object;&lt;/td&gt;
+      &lt;td&gt;246.0&lt;/td&gt;
+      &lt;td&gt;36472.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;898&lt;/th&gt;
+      &lt;td&gt;[Ljava/lang/String;&lt;/td&gt;
+      &lt;td&gt;9.0&lt;/td&gt;
+      &lt;td&gt;28024.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1297&lt;/th&gt;
+      &lt;td&gt;Ljava/lang/invoke/MethodType;&lt;/td&gt;
+      &lt;td&gt;276.0&lt;/td&gt;
+      &lt;td&gt;15456.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;3238&lt;/th&gt;
+      &lt;td&gt;Ljava/util/concurrent/ConcurrentHashMap$Node;&lt;/td&gt;
+      &lt;td&gt;274.0&lt;/td&gt;
+      &lt;td&gt;13152.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1065&lt;/th&gt;
+      &lt;td&gt;Ljava/util/HashMap;&lt;/td&gt;
+      &lt;td&gt;146.0&lt;/td&gt;
+      &lt;td&gt;10512.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;3244&lt;/th&gt;
+      &lt;td&gt;[Ljava/lang/Class;&lt;/td&gt;
+      &lt;td&gt;261.0&lt;/td&gt;
+      &lt;td&gt;9680.0&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The results indicate an increase of ~870KB of bytes in byte arrays, which unfortunately is not very informative, especially combined with the size of other types significantly differing between the two versions (possibly due to GraalVM internal code changes which result in different allocation patterns).&lt;/p&gt;
+
+&lt;h4 id=&quot;is-the-heap-image-bigger-because-we-store-more-metadata&quot;&gt;Is the heap image bigger because we store more metadata?&lt;/h4&gt;
+
+&lt;p&gt;As shown in &lt;a href=&quot;#better-understanding-what-is-different-between-the-generated-native-executables&quot;&gt;Better understanding what is different between the generated native executables&lt;/a&gt; there appears to be a significant increase in the number of types registered for reflection (645 in Mandrel 22.3 vs. 4317 in Mandrel 23.0).
+This, along with the reported (in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;native-image&lt;/code&gt; output) increase of code metadata, initially led us to think that there is some change in Mandrel that results in more types being registered for reflection.
+In the end, as discussed in &lt;a href=&quot;#attributing-binary-size-increase-to-specific-code-changes&quot;&gt;Attributing Binary Size Increase to Specific Code Changes&lt;/a&gt;, contrary to our intuition, the increase is not related to the increase in the reported types registered for reflection which is due to &lt;a href=&quot;https://github.com/oracle/graal/commit/23d70b802b2dbc9b7d2324a31141c32b6575083f#diff-54ef73a23b10bd907d5869cc88b651fae7fef0467ccfaf8f50472cdd1e114eceR385&quot;&gt;a fix in the way the reported types registered for reflection are measured&lt;/a&gt;.
+Instead, the increase of the code metadata stored in the image heap is due to &lt;a href=&quot;https://github.com/oracle/graal/pull/5156&quot;&gt;skipping constant folding of reflection methods with side effects&lt;/a&gt;, a fix introduced in 23.0 to prevent undesired effects when folding invocations using reflection.&lt;/p&gt;
+
+&lt;h2 id=&quot;attributing-binary-size-increase-to-specific-code-changes&quot;&gt;Attributing Binary Size Increase to Specific Code Changes&lt;/h2&gt;
+
+&lt;p&gt;At this point, we have a rough understanding of what is different in the generated native executables, but we still don’t know why.
+Is this increase in the size of native executables well justified?&lt;/p&gt;
+
+&lt;p&gt;To answer this question, we decided to detect the code base changes that resulted in the observed behaviors.
+To do so, we used &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git bisect&lt;/code&gt;, marking the 22.3 release’s commit as &lt;em&gt;good&lt;/em&gt; and the 23.0 release’s commit as &lt;em&gt;bad&lt;/em&gt;.
+For each commit, we built an instance of Mandrel and compiled our test application to see the code and heap area size.
+If the sizes matched the ones from 22.3, we marked the commit as &lt;em&gt;good&lt;/em&gt; otherwise we marked it as &lt;em&gt;bad&lt;/em&gt;.
+During this process, we noticed that there were commits resulting in binary sizes bigger than the ones generated with 22.3 but smaller than 23.0.
+This confirmed our expectation that the binary size increase was the result of more than one change in the code base.
+To reduce the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git bisect&lt;/code&gt; cost we noted down the code and heap area sizes for each tested commit hash.
+Then using that info, we replayed the bisect process a few times using the output of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git bisect log&lt;/code&gt; and changing which commits we considered &lt;em&gt;good&lt;/em&gt;, once we identified the first, second, and so forth change contributing to the binary size increase.&lt;/p&gt;
+
+&lt;h3 id=&quot;identified-causes-of-code-size-increase&quot;&gt;Identified Causes of Code Size Increase&lt;/h3&gt;
+
+&lt;p&gt;The above process led us to the conclusion that the binary size increase is mainly mainly the result of the following three changes:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/oracle/graal/pull/5156&quot;&gt;&lt;strong&gt;Skipping constant folding of reflection methods with side effects&lt;/strong&gt;&lt;/a&gt;: A fix introduced in 23.0 to prevent undesired effects when folding invocations using reflection (e.g. triggering build time initialization of classes that should be run time initialized).
+This change is responsible for the image heap size increase.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/oracle/graal/pull/5330&quot;&gt;&lt;strong&gt;Reducing the number of stores that are executed by the serial GC write barriers to improve performance by reducing the number of cache misses&lt;/strong&gt;&lt;/a&gt;: This change essentially adds two additional instructions, a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cmpb   $0x0,0x30(%rcx,%rax,1)&lt;/code&gt; and a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;je&lt;/code&gt;, to each inlined instance of the serial GC write barrier.
+The aim of this change is to avoid unnecessary stores in the GC write barriers in order to reduce cache line invalidations and improve performance.
+According to our measurements, the total impact of this change is ~1MB increase of code area in our test case which inlines the write barrier 90697 times when using Mandrel 22.3 and 93686 times when using Mandrel 23.0.
+To measure the number the barrier was inlined we inspect the number of breakpoint locations set in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gdb&lt;/code&gt; when running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;b CardTable.java:91&lt;/code&gt;, i.e. when setting a breakpoint in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;com.oracle.svm.core.genscavenge.remset.CardTable#setDirty&lt;/code&gt;.
+E.g.:&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code class=&quot;language-gdb&quot;&gt;(gdb) b CardTable.java:91
+Breakpoint 1 at 0x407574: CardTable.java:91. (93686 locations)
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/oracle/graal/commit/4de58f1b3c484213951622c03d74f3435a20c4ef#diff-991a434bbfc9a6af5514e4609380d5fbfe7618585d5b1b3f11fa2a7431ca7ab0L1388-R1388&quot;&gt;&lt;strong&gt;Enabling code alignment to compensate for the performance penalty of Intel’s Jump Conditional Code Erratum&lt;/strong&gt;&lt;/a&gt;: According to &lt;a href=&quot;https://www.intel.com/content/dam/support/us/en/documents/processors/mitigations-jump-conditional-code-erratum.pdf&quot;&gt;Intel’s white paper about “Mitigations for Jump Conditional Code Erratum”&lt;/a&gt;:&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;Software can compensate for the performance effects of the workaround for this erratum with optimizations that align the code such that jump instructions (and macro-fused jump instructions) do not cross 32-byte boundaries or end on a 32-byte boundary.
+Such aligning can reduce or eliminate the performance penalty caused by the transition of execution from Decoded ICache to the legacy decode pipeline.&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;p&gt;As a result, this change results in an increased number of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nop&lt;/code&gt; instructions in the generated code, but can result in up to 4% performance improvements according to the same document:&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;Intel has observed performance effects associated with the workaround ranging from
+0-4% on many industry-standard benchmarks.
+In subcomponents of these benchmarks, Intel has observed outliers higher than the 0-4% range.
+Other workloads not observed by Intel may behave differently.
+Intel has in turn developed software-based tools to minimize the impact on potentially affected applications and workloads.&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;p&gt;According to our measurements, the total impact of this change is ~900KB in our test case.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;In conclusion, the increase in the size of native executables produced with Mandrel 23.0 compared to Mandrel 22.3 can be attributed to the above three specific changes in the Mandrel code base.&lt;/p&gt;
+
+&lt;p&gt;While these changes do contribute to the increase in native executable size, they also come with performance and correctness benefits.
+Therefore, the larger executables are a trade-off to ensure better application performance and avoid undesired side effects.&lt;/p&gt;
+
+            </description>
+            <pubDate>Thu, 02 Nov 2023 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/mandrel-23-0-image-size-increase/
+            </guid>
+            
+            
+            
+            <author>Foivos Zakkak (https://twitter.com/zakkak)</author>
+            
+        </item>
+        
+    </channel>
+</rss>
