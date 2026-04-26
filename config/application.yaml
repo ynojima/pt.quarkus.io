@@ -1,0 +1,190 @@
+tsuji:
+  jar: https://github.com/doc-l10n-kit/tsuji/releases/download/v0.8.15/tsuji.jar
+
+  language:
+    from: en
+    to: pt-BR
+
+  po:
+    base-dir: l10n/po/pt_BR
+
+  translator:
+    type: deepl
+
+    target-directories:
+      - _guides
+      - _posts
+      - _versions
+      - _data
+      - _includes
+      - _layouts
+      - _redirects
+
+  jekyll:
+    source-dir: upstream
+    override-dir: l10n/override/pt_BR
+    destination-dir: docs
+    cname: pt.quarkus.io
+    surge-domain-suffix: pt-quarkusio.surge.sh
+    jekyll-l10n-branch: main
+
+    extract:
+      yaml:
+        exclude:
+          - _data/versioned/3-0/index/quarkus.yaml
+          - _data/authors.yaml
+          - _data/languages.yaml
+          - _data/publications.yaml
+          - _data/versions.yaml
+
+      html:
+        include:
+          - _includes/about.html
+          - _includes/awards-band.html
+          - _includes/catalog-detail-band.html
+          - _includes/catalog-index-band.html
+          - _includes/community-contrib-band.html
+          - _includes/container-first.html
+          - _includes/continuum.html
+          - _includes/developer-joy.html
+          - _includes/discussion.html
+          - _includes/events-discussions-band.html
+          - _includes/events-worldtour-band.html
+          - _includes/feedback-community-band.html
+          - _includes/get-started-band.html
+          - _includes/get-started-band-lightblue.html
+          - _includes/get-started-code-steps.html
+          - _includes/header-navigation.html
+          - _includes/header-navigation_full.html
+          - _includes/homepage-container_first-band.html
+          - _includes/homepage-developer_joy-band.html
+          - _includes/homepage-extensions-band.html
+          - _includes/homepage-features-band.html
+          - _includes/homepage-features-icon-band.html
+          - _includes/homepage-hero-band.html
+          - _includes/homepage-hero-band-ssjprime.html
+          - _includes/homepage-hero-Q2release-band.html
+          - _includes/homepage-hero-newrelease-band.html
+          - _includes/homepage-imperative_and_reactive-band.html
+          - _includes/homepage-performance-band.html
+          - _includes/homepage-worldtour-band.html
+          - _includes/kubernetes-native.html
+          - _includes/standards.html
+          - _includes/support-help-band.html
+          - _includes/support-options-band.html
+          - _includes/worldtour-abstracts.html
+          - _includes/worldtour-code.html
+          - _layouts/quarkus3.html
+
+  glossary:
+    enabled: true
+    entries:
+      - term: "Quarkus"
+        translation: "Quarkus"
+      - term: "Quarkus Security"
+        translation: "Quarkus Security"
+      - term: "Swagger"
+        translation: "Swagger"
+      - term: "OpenAPI"
+        translation: "OpenAPI"
+      - term: "Hibernate"
+        translation: "Hibernate"
+      - term: "Hibernate Validator"
+        translation: "Hibernate Validator"
+      - term: "Hibernate ORM with Panache"
+        translation: "Hibernate ORM with Panache"
+      - term: "JDBC"
+        translation: "JDBC"
+      - term: "Micrometer"
+        translation: "Micrometer"
+      - term: "Panache"
+        translation: "Panache"
+      - term: "RESTEasy Reactive"
+        translation: "RESTEasy Reactive"
+      - term: "Narayana"
+        translation: "Narayana"
+      - term: "Mutiny"
+        translation: "Mutiny"
+      - term: "Camel"
+        translation: "Camel"
+      - term: "Mandrel"
+        translation: "Mandrel"
+      - term: "Stork"
+        translation: "Stork"
+      - term: "Funqy"
+        translation: "Funqy"
+      - term: "Undertow"
+        translation: "Undertow"
+      - term: "SmallRye"
+        translation: "SmallRye"
+      - term: "Vert.x"
+        translation: "Vert.x"
+      - term: "AMQP"
+        translation: "AMQP"
+      - term: "RabbitMQ"
+        translation: "RabbitMQ"
+      - term: "Kafka"
+        translation: "Kafka"
+      - term: "Flyway"
+        translation: "Flyway"
+      - term: "Spring DI"
+        translation: "Spring DI"
+      - term: "Spring Security"
+        translation: "Spring Security"
+      - term: "Spring Data"
+        translation: "Spring Data"
+      - term: "Spring Web"
+        translation: "Spring Web"
+      - term: "Picocli"
+        translation: "Picocli"
+      - term: "Liquibase"
+        translation: "Liquibase"
+      - term: "Gradle"
+        translation: "Gradle"
+      - term: "Maven"
+        translation: "Maven"
+      - term: "JReleaser"
+        translation: "JReleaser"
+      - term: "OpenTelemetry"
+        translation: "OpenTelemetry"
+      - term: "OpenTracing"
+        translation: "OpenTracing"
+      - term: "Dev Services"
+        translation: "Dev Services"
+      - term: "Infinispan"
+        translation: "Infinispan"
+      - term: "Azure Functions"
+        translation: "Azure Functions"
+      - term: "Google Cloud Functions"
+        translation: "Google Cloud Functions"
+      - term: "Amazon Lambda"
+        translation: "Amazon Lambda"
+      - term: "Amazon Lambda SnapStart"
+        translation: "Amazon Lambda SnapStart"
+      - term: "Jakarta Persistence"
+        translation: "Jakarta Persistence"
+      - term: "Jakarta REST"
+        translation: "Jakarta REST"
+      - term: "GraalVM"
+        translation: "GraalVM"
+      - term: "Docker"
+        translation: "Docker"
+      - term: "Podman"
+        translation: "Podman"
+      - term: "Kubernetes"
+        translation: "Kubernetes"
+      - term: "OpenShift"
+        translation: "OpenShift"
+      - term: "readiness probe"
+        translation: "readiness probe"
+      - term: "liveness probe"
+        translation: "liveness probe"
+      - term: "OpenID Connect"
+        translation: "OpenID Connect"
+      - term: "WebAuthn"
+        translation: "WebAuthn"
+
+  git:
+    user:
+      name: gastaldi
+      email: gegastaldi@gmail.com
